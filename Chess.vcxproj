@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -152,6 +152,7 @@
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MoveGen.cpp" />
     <ClCompile Include="PieceTextures.cpp" />
     <ClCompile Include="SDLHandler.cpp" />
     <ClCompile Include="ButtonFunctions.cpp" />
@@ -167,6 +168,8 @@
     <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="HexConstants.h" />
+    <ClInclude Include="Move.h" />
+    <ClInclude Include="MoveList.h" />
     <ClInclude Include="PieceTextures.h" />
     <ClInclude Include="SDLHandler.h" />
     <ClInclude Include="TextureList.h" />

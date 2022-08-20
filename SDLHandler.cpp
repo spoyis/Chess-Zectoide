@@ -26,6 +26,7 @@ int SDLHandler::pollEvent()
                 pollGameRendererEvents(event);
                 break;
             case SDL_MOUSEBUTTONUP:
+              if(game->gameRenderState == PLAYING)
                 game->releasePiece();
         }
     }

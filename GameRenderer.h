@@ -54,5 +54,7 @@ private:
 	char piece[8][8];
 	void setupMap();
 	void pollBoardPosition(int* x, int* y);
+	chess::BitBoard getLegalMoves(int piece, int x, int y);
+	chess::BitBoard legalMoves;
 };
 

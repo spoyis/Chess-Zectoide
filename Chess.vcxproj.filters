@@ -25,6 +25,9 @@
     <Filter Include="Source Files\texture classes">
       <UniqueIdentifier>{b2c82367-3b72-4856-bfc6-fcd54f0c41ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\namespace  chess\Move Generation">
+      <UniqueIdentifier>{2edfc266-0d8a-402f-86f6-18564953b8e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +100,12 @@
     </ClInclude>
     <ClInclude Include="PieceTextures.h">
       <Filter>Header Files\texture classes</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveList.h">
+      <Filter>Header Files\namespace  chess\Move Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="Move.h">
+      <Filter>Header Files\namespace  chess\Move Generation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

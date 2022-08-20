@@ -32,6 +32,17 @@ void GameRenderer::render()
 		if (isAPieceBeingHeld)
 		{
 			int x, y;
+			// render legal move squares
+			chess::BitBoard legalMovesCopy = legalMoves;
+			std::cout << "SUS\n";
+			while (legalMovesCopy.board)
+			{
+				auto move = legalMovesCopy.popBit();
+				x = move / 8;
+				y = move % 8;
+				std::cout << "move " << move << " " << x << " " << y << '\n';
+			}
+			
 			SDL_GetMouseState(&x, &y);
 			textures.renderPiece(whichPieceIsBeingHeld, x - squareSize/2, y - squareSize/2);
 		}
@@ -54,16 +65,19 @@ void GameRenderer::clickPiece(int x, int y)
 	int selectedPiece = whichIndex[piece[y][x]];
 	if (selectedPiece != -1)
 	{
-		isAPieceBeingHeld = true;
-		whichPieceIsBeingHeld = selectedPiece;
-		heldPieceOriginalSquare = {y,x};
-		piece[y][x] = '0';
+		legalMoves = getLegalMoves(selectedPiece, x, y);
+		if (legalMoves.board)
+		{
+			isAPieceBeingHeld = true;
+			whichPieceIsBeingHeld = selectedPiece;
+			heldPieceOriginalSquare = { y,x };
+			piece[y][x] = '0';
+		}
 	}
 }
 
 void GameRenderer::releasePiece()
 {
-	std::cout << "hmm\n";
 	if (isAPieceBeingHeld)
 	{
 		int x, y;
@@ -72,7 +86,14 @@ void GameRenderer::releasePiece()
 		if (x == -1 or y == -1) return; // PIECE OUT OF BOUNDS
 		std::cout << "released at " << x << " " << y << '\n';
 		isAPieceBeingHeld = false;
-		piece[heldPieceOriginalSquare.first][heldPieceOriginalSquare.second] = pieceChar[whichPieceIsBeingHeld];
+		if (true) // TODO: SUBSTITUTE THIS FOR LEGAL MOVE CHECK
+		{
+			SDL_GetMouseState(&x, &y);
+			pollBoardPosition(&x, &y);
+			piece[y][x] = pieceChar[whichPieceIsBeingHeld];
+		}
+		else
+			piece[heldPieceOriginalSquare.first][heldPieceOriginalSquare.second] = pieceChar[whichPieceIsBeingHeld];
 	}
 }
 
@@ -90,7 +111,7 @@ void GameRenderer::setupGame(int color)
 			piece[i][j] = '0';
 			for (int k = 0; k < chess::pieces_offset; k++)
 			{
-				if (game->boardState.board[k][chess::INDEX[i][j]])
+				if (game->boardState.board[k][chess::BitBoard::INDEX[i][j]])
 				{
 					piece[i][j] = pieceChar[k];
 					break;
@@ -134,6 +155,39 @@ void GameRenderer::pollBoardPosition(int* x, int* y)
 	*y /= squareSize;
 	*x /= squareSize;
 
-	if (!playingAsWhite)
+	// if playing as black, the pieces aren't displayed on the same logical squares as saved in memory.
+	// in fact, they're mirrored.
+	// this condition checks for that and mirrors the click data for proper gameplay.
+	if (!playingAsWhite) 
+	{
+		*x = abs(*x - 7);
 		*y = abs(*y - 7);
+	}
+}
+
+chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
+{
+	if (!game->turnQuery(playingAsWhite)) 
+		return chess::BitBoard(); // not your turn lol, returns empty Bitboard
+
+	if (piece > chess::white_pieces_offset)
+		piece -= chess::white_pieces_offset;
+	chess::MoveList moves;
+	switch (piece)
+	{
+	case chess::pawn:
+		moves = game->generatePawnMoves();
+		break;
+	default:
+		break;
+	}
+
+	y = abs(y - 7);
+	int index = x + (8 * y);
+	for (const auto& move : moves)
+	{
+		if (index == move.initialSquare) return move.possibleMoves;
+	}
+
+	return chess::BitBoard(); // returns empty BitBoard
 }

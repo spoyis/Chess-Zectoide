@@ -8,6 +8,7 @@ int main(int, char**)
 	uint64_t start, end = 0, diff = 1000;
 	while (running)
 	{
+		//std::cout << SDL_GetError() << '\n';
 		start = SDL_GetTicks();
 		
 		if (diff > (1000 / 165)) // 165 fps
