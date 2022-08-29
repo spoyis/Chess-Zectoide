@@ -66,6 +66,17 @@ namespace chess
 		8 // white pawns go north
 	};
 
+	static constexpr uint64_t pawnPromotionRank[]
+	{
+		rank[0],
+		0,      // never used
+		0,     // never used
+		0,    // never used
+		0,   // never used
+		0,
+		rank[7]
+	};
+
 	static constexpr int enemyPieceIndex[]{
 		13,                 // pieces_offset +1  --> white pieces
 		0,                 // never used

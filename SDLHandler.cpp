@@ -62,6 +62,10 @@ void SDLHandler::pollGameRendererEvents(SDL_Event& event)
                 game->clickPiece(x, y);
             return;
         }
+        case PROMOTING:
+        {
+            game->pollPromotion();
+        }
     }
 }
 
@@ -75,6 +79,10 @@ void SDLHandler::update()
     {
         play->checkHover(window);
         play->Render(renderer);
+    }
+    else if (game->gameRenderState == PROMOTING)
+    {
+        settings->textureList->render();
     }
 
     game->render();

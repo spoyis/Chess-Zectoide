@@ -14,10 +14,10 @@ void GameRenderer::render()
 	}
 	if (gameRenderState == PLAYING)
 	{
-		int y = playingAsWhite ? boardStart : boardStart + squareSize * 7;
+		int y = playingAsWhite ? boardStart + squareSize * 7: boardStart;
 		for (int i = 0; i < 8; i++)
 		{
-			int x = playingAsWhite ? 0 : squareSize * 7;
+			int x = playingAsWhite ?  0: squareSize * 7;
 			for (int j = 0; j < 8; j++)
 			{
 				int index = whichIndex[piece[i][j]];
@@ -26,7 +26,7 @@ void GameRenderer::render()
 				
 				x = playingAsWhite? (x + squareSize) : (x - squareSize);
 			}
-			y = playingAsWhite ? (y + squareSize) : (y - squareSize);
+			y = playingAsWhite ? (y - squareSize) : (y + squareSize);
 		}
 
 		if (isAPieceBeingHeld)
@@ -34,18 +34,46 @@ void GameRenderer::render()
 			int x, y;
 			// render legal move squares
 			chess::BitBoard legalMovesCopy = legalMoves;
-			std::cout << "SUS\n";
+
 			while (legalMovesCopy.board)
 			{
 				auto move = legalMovesCopy.popBit();
-				x = move / 8;
-				y = move % 8;
-				std::cout << "move " << move << " " << x << " " << y << '\n';
+				x = playingAsWhite ? 
+					(move % 8) * squareSize :
+					abs((int)(move % 8) - 7) * squareSize;
+				y = playingAsWhite ?
+					boardStart + abs((long)(move / 8UL) - 7L) * squareSize:
+					boardStart + move / 8UL * squareSize;
+				
+				textures.renderPiece(LEGAL_MOVE_INDICATOR, x , y);
+				//std::cout << "move " << move << "X= " << x << " Y=" << y << " " <<SDL_GetError() << '\n';
+				//std::cout << "held piece: " << whichPieceIsBeingHeld << '\n';
 			}
 			
 			SDL_GetMouseState(&x, &y);
 			textures.renderPiece(whichPieceIsBeingHeld, x - squareSize/2, y - squareSize/2);
 		}
+
+		if (game->getPromotionState())
+		{
+			gameRenderState = PROMOTING;
+		}
+
+		return;
+	}
+	if (gameRenderState == PROMOTING)
+	{
+		auto x = width / 2.7, y = height / 3.0;
+
+		// slightly different logic for choosing piece colors when promoting
+		// since the gamestate object will already have switched the offset
+		// this macro just makes the code look less ugly.
+        #define PROMOTING_COLOR - game->getBoardStateOffset() + chess::white_pieces_offset
+
+		textures.renderPiece(chess::queen  PROMOTING_COLOR, x, y);
+		textures.renderPiece(chess::rook   PROMOTING_COLOR, x + squareSize, y);
+		textures.renderPiece(chess::knight PROMOTING_COLOR, x, y + squareSize);
+		textures.renderPiece(chess::bishop PROMOTING_COLOR, x + squareSize, y + squareSize);
 	}
 }
 
@@ -61,7 +89,7 @@ void GameRenderer::clickPiece(int x, int y)
 {
 	pollBoardPosition(&x, &y);
 	if (x == -1 or y == -1) return; // PIECE OUT OF BOUNDS
-	std::cout << "selected " << x << " " << y << '\n';
+	std::cout << "selected " << x << " " << y << "LOLO "<< piece[y][x]<< '\n';
 	int selectedPiece = whichIndex[piece[y][x]];
 	if (selectedPiece != -1)
 	{
@@ -86,13 +114,28 @@ void GameRenderer::releasePiece()
 		if (x == -1 or y == -1) return; // PIECE OUT OF BOUNDS
 		std::cout << "released at " << x << " " << y << '\n';
 		isAPieceBeingHeld = false;
-		if (true) // TODO: SUBSTITUTE THIS FOR LEGAL MOVE CHECK
+		bool legalMove{false};
+
+		chess::BitBoard legalMovesCopy = legalMoves;
+		while (legalMovesCopy.board)
 		{
-			SDL_GetMouseState(&x, &y);
-			pollBoardPosition(&x, &y);
-			piece[y][x] = pieceChar[whichPieceIsBeingHeld];
+			int X, Y;
+			auto move = legalMovesCopy.popBit();
+			X = (move % 8);
+			Y =  move / 8UL;
+
+			std::cout << "actual coords" << X << " " << Y << "| DROPPED AT " << x << y << '\n';
+			if (x == X and y == Y)
+			{
+				piece[y][x] = pieceChar[whichPieceIsBeingHeld];
+				auto OriginalSquare = heldPieceOriginalSquare.first * 8 + heldPieceOriginalSquare.second;
+				game->make(whichPieceIsBeingHeld - game->getBoardStateOffset(), OriginalSquare, move);
+				legalMove = true;
+				updatePieceMatrix();
+				break;
+			}
 		}
-		else
+		if(!legalMove)
 			piece[heldPieceOriginalSquare.first][heldPieceOriginalSquare.second] = pieceChar[whichPieceIsBeingHeld];
 	}
 }
@@ -104,6 +147,11 @@ void GameRenderer::setupGame(int color)
 
 	game = new chess::GameState();
 
+	updatePieceMatrix();
+}
+
+void GameRenderer::updatePieceMatrix()
+{
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -144,7 +192,6 @@ void GameRenderer::setupMap()
 
 void GameRenderer::pollBoardPosition(int* x, int* y)
 {
-	std::cout << "polling " << *x << " " << *y << '\n';
 	if (*y < boardStart or *y > boardStart + squareSize * 8)
 	{
 		*y = -1;
@@ -158,17 +205,19 @@ void GameRenderer::pollBoardPosition(int* x, int* y)
 	// if playing as black, the pieces aren't displayed on the same logical squares as saved in memory.
 	// in fact, they're mirrored.
 	// this condition checks for that and mirrors the click data for proper gameplay.
-	if (!playingAsWhite) 
+	if (playingAsWhite) 
 	{
-		*x = abs(*x - 7);
 		*y = abs(*y - 7);
 	}
+	else
+		*x = abs(*x - 7);
 }
 
 chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 {
-	if (!game->turnQuery(playingAsWhite)) 
-		return chess::BitBoard(); // not your turn lol, returns empty Bitboard
+	// TODO: UNCOMMENT THIS CODE WHEN ACTUALLY PLAYING VS ENGINE
+	//if (!game->turnQuery(playingAsWhite)) 
+		//return chess::BitBoard(); // not your turn lol, returns empty Bitboard
 
 	if (piece > chess::white_pieces_offset)
 		piece -= chess::white_pieces_offset;
@@ -182,12 +231,46 @@ chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 		break;
 	}
 
-	y = abs(y - 7);
 	int index = x + (8 * y);
+	std::cout << "THIS WAS EVALUATED AT " << x << " " << y << " == " << index << '\n';
 	for (const auto& move : moves)
 	{
 		if (index == move.initialSquare) return move.possibleMoves;
 	}
 
 	return chess::BitBoard(); // returns empty BitBoard
+}
+
+
+void GameRenderer::pollPromotion()
+{
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	// top left of squares
+	auto upperBoundX = width / 2.7, upperBoundY = height / 3.0; 
+
+	// bottom right bounds
+	auto lowerBoundX = upperBoundX + squareSize * 2; 
+	auto lowerBoundY = upperBoundY + squareSize * 2; 
+
+	std::cout << "CLICKED " << x << " " << y << "BOUNDS: " << upperBoundX << " " << upperBoundY << " | " << lowerBoundX << " " << lowerBoundY << '\n';
+	if (x >= upperBoundX and x <= lowerBoundX and y >= upperBoundY and y <= lowerBoundY)
+	{
+		// visual promotion matrix as shown in the gui
+		static constexpr int promotionMatrix[2][2]
+		{
+			{chess::queen, chess::rook},
+			{chess::knight, chess::bishop}
+		};
+		
+		// calculates index for promotionMatrix
+		x = (x - upperBoundX) / squareSize;
+		y = (y - upperBoundY) / squareSize;
+		std::cout << "SUCCESS " << x << " " << y << '\n';
+		game->promote(promotionMatrix[y][x]);
+		updatePieceMatrix();
+		gameRenderState = PLAYING;
+	}
+	
+	
 }

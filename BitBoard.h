@@ -32,6 +32,13 @@ public:
 		return *this;
 	}
 
+	// flips bit at boardId index in the mask
+	BitBoard& operator -=(const int boardId)
+	{
+		board = board ^ (1ULL << boardId);
+		return *this;
+	}
+
 	BitBoard& operator +=(const BitBoard right)
 	{
 		board |= right.board;
@@ -110,7 +117,7 @@ public:
 		return BitBoard(board);
 	}
 
-	//                   INDEX[FILE][RANK]
+	//                   INDEX[RANK][FILE]
 	static constexpr int INDEX[8][8] = {
 	{0, 1, 2 ,3 , 4, 5, 6, 7},      // a1, b1, c1...
 	{8, 9, 10, 11 ,12 ,13, 14, 15},// a2, b2, c2...
@@ -124,6 +131,12 @@ public:
 
 	void debug(const char* string)
 	{
+		/*
+			REMEMBER THE FOLLOWING WHEN USING THIS FUNCTION:
+
+			a1 is printed on the bottom left,
+			h8 is printed on the top right.
+		*/
 		std::cout << "--- BITBOARD: " << string << " DEBUG ----\n";
 		for (int i = 7; i >= 0; i--)
 		{
