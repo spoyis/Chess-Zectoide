@@ -19,6 +19,7 @@ public:
 	MoveList generateBishopMoves();
 	void make(int pieceId, unsigned long startSquare, unsigned long finalSquare);
 	bool makePawn(unsigned long startSquare, unsigned long finalSquare);
+	bool makeOrthodiagonal(unsigned long startSquare, unsigned long finalSquare);
 	bool turnQuery(bool color) { return color == whoseTurn; }
 	int getBoardStateOffset() { return boardStateOffset; }
 	auto getPromotionState() { return  isBeingPromoted; };
@@ -30,17 +31,17 @@ private:
 	unsigned long enPassantSquare{NO_EN_PASSANT};
 	unsigned long futureEnPassantSquare;
 	bool isBeingPromoted{};
-	
+
+	template<void (BitBoard::* BitBoardFunctPtr)()>
+	inline void castRay(BitBoard& output, int startingSquare);
 }; // end class GameState
 
-
-typedef bool (GameState::*MemFunctPtr)(unsigned long, unsigned long);
-
+typedef bool (GameState::* MemFunctPtr)(unsigned long, unsigned long);
 
 constexpr MemFunctPtr methodPointers[] = {
 	nullptr,//king
 	nullptr,//queen
-	nullptr,//rook
+	&GameState::makeOrthodiagonal,//rook
 	nullptr,//bishop
 	nullptr,//knight 
 	&GameState::makePawn//pawn

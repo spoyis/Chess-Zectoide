@@ -45,4 +45,99 @@ namespace chess
     return moves;
   }
 
+  MoveList GameState::generateRookMoves()
+  {
+      BitBoard Rooks = boardState.board[rook + boardStateOffset];
+      MoveList moves(Rooks.populationCount());
+
+      while (Rooks.board)
+      {
+          BitBoard PossibleMoves;
+
+          auto piece = Rooks.popBit();
+          castRay<&BitBoard::north>(PossibleMoves, piece);
+          castRay<&BitBoard::south>(PossibleMoves, piece);
+          castRay<&BitBoard::west>(PossibleMoves, piece);
+          castRay<&BitBoard::east>(PossibleMoves, piece);
+          moves.addMove(Move{ piece, PossibleMoves });
+      }
+
+      return moves;
+  }
+
+  MoveList GameState::generateBishopMoves()
+  {
+      BitBoard Bishops = boardState.board[bishop + boardStateOffset];
+      MoveList moves(Bishops.populationCount());
+
+      while (Bishops.board)
+      {
+          BitBoard PossibleMoves;
+
+          auto piece = Bishops.popBit();
+          //todo: swap for northeast, northwest, southeast, southwest.
+          castRay<&BitBoard::north>(PossibleMoves, piece);
+          castRay<&BitBoard::south>(PossibleMoves, piece);
+          castRay<&BitBoard::west>(PossibleMoves, piece);
+          castRay<&BitBoard::east>(PossibleMoves, piece);
+          moves.addMove(Move{ piece, PossibleMoves });
+      }
+
+      return moves;
+  }
+
+  template<void (BitBoard::* direction)()>
+  inline void chess::GameState::castRay(BitBoard& output, int startingSquare)
+  {
+      BitBoard square{ 1ULL << startingSquare };
+      BitBoard ray;
+
+      (square.*direction)();
+      output += square & ENEMYBITBOARD; // edge case: enemy piece is on the first ray direction square.
+      //square.debug("STARTING SQUARE");
+
+      // loop unrolled for performance reasons --> for(int i = 0; i < 7; i++)
+      // steps:
+      // call direction method for the 'square' object (shifts bitboard towards direction,could be south/north/east/etc)
+      // check if intersected with empty bitboard
+      // add to output
+      //i = 0
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 1
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 1
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 2
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 3
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 4
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 5
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+      //i = 6
+      (square.*direction)();
+      square &= boardState.board[empty_board];
+      ray += square;
+
+      //ray.debug("FINAL RAY");
+      output += ray;
+      (ray.*direction)();
+      ray &= ENEMYBITBOARD;
+      //ray.debug("CAPTURE RAY");
+      output += ray;
+  }
 }

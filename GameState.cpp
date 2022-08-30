@@ -7,6 +7,14 @@ void GameState::make(int pieceId, unsigned long startSquare, unsigned long final
 {
 	futureEnPassantSquare = NO_EN_PASSANT;
 
+	// update your own piece bitboard
+	// for your own color.
+	boardState.board[pieceId + boardStateOffset] += finalSquare;
+	boardState.board[pieces_offset + whoseTurn] += finalSquare;
+
+	boardState.board[pieceId + boardStateOffset] -= startSquare;
+	boardState.board[pieces_offset + whoseTurn] -= startSquare;
+
 	// THIS LOOKS FUCKING CRAZY
 	// BUT IT'S HOW YOU SEND A MESSAGE TO AN OBJECT USING POINTERS.
 	// ALSO, WHICHEVER METHOD CALLED WILL RETURN A BOOLEAN INDICATING WHETHER OR NOT THE MOVE INCLUDES A CAPTURE
@@ -48,18 +56,6 @@ bool GameState::makePawn(unsigned long startSquare, unsigned long finalSquare)
 		promotedPieceIndex = finalSquare;
 	}
 
-	// update your own pawn bitboard
-	boardState.board[pawn + boardStateOffset].debug("BEFORE MOVE PAWNS");
-	boardState.board[pieces_offset + whoseTurn].debug("BEFORE MOVE PIECES");
-	boardState.board[pawn + boardStateOffset] += finalSquare;
-	boardState.board[pieces_offset + whoseTurn] += finalSquare;
-
-	boardState.board[pawn + boardStateOffset] -= startSquare;
-	boardState.board[pieces_offset + whoseTurn] -= startSquare;
-
-	boardState.board[pawn + boardStateOffset].debug("AFTER MOVE PAWNS");
-	boardState.board[pieces_offset + whoseTurn].debug("AFTER MOVE PIECES");
-	
 	if (abs((int)startSquare - (int)finalSquare) >= 10)
 	{
 		// moved two squares up
@@ -89,6 +85,14 @@ void GameState::promote(int pieceId)
 	boardState.board[pawn + white_pieces_offset - boardStateOffset] -= promotedPieceIndex;
 	boardState.board[pieceId + white_pieces_offset - boardStateOffset] += promotedPieceIndex;
 	isBeingPromoted = false;
+}
+
+bool chess::GameState::makeOrthodiagonal(unsigned long startSquare, unsigned long finalSquare)
+{
+	if (ENEMYBITBOARD[finalSquare])
+		return true;
+	
+	return false;
 }
 
 }// end namespace chess

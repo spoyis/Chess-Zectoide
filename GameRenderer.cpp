@@ -227,6 +227,9 @@ chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 	case chess::pawn:
 		moves = game->generatePawnMoves();
 		break;
+	case chess::rook:
+		moves = game->generateRookMoves();
+		break;
 	default:
 		break;
 	}
@@ -253,7 +256,6 @@ void GameRenderer::pollPromotion()
 	auto lowerBoundX = upperBoundX + squareSize * 2; 
 	auto lowerBoundY = upperBoundY + squareSize * 2; 
 
-	std::cout << "CLICKED " << x << " " << y << "BOUNDS: " << upperBoundX << " " << upperBoundY << " | " << lowerBoundX << " " << lowerBoundY << '\n';
 	if (x >= upperBoundX and x <= lowerBoundX and y >= upperBoundY and y <= lowerBoundY)
 	{
 		// visual promotion matrix as shown in the gui
@@ -266,7 +268,7 @@ void GameRenderer::pollPromotion()
 		// calculates index for promotionMatrix
 		x = (x - upperBoundX) / squareSize;
 		y = (y - upperBoundY) / squareSize;
-		std::cout << "SUCCESS " << x << " " << y << '\n';
+
 		game->promote(promotionMatrix[y][x]);
 		updatePieceMatrix();
 		gameRenderState = PLAYING;

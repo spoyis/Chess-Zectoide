@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <intrin.h>
-
+#include "HexConstants.h"
 namespace chess
 { // begin namespace chess
 
@@ -111,6 +111,29 @@ public:
 		BitBoard output(shiftAmount > 0? board << shiftAmount : board >> -shiftAmount);
 		return output;
 	}
+
+	// shifts entire bitboard north
+	void north()
+	{
+		board = board << 8;
+	}
+	// shifts entire bitboard south
+	void south()
+	{
+		board = board >> 8;
+	}
+	// shifts entire bitboard west
+	void west()
+	{
+		board = (board >> 1) & Not_H_File;
+	}
+	// shifts entire bitboard east
+	void east()
+	{
+		board = (board << 1) & Not_A_File;
+	}
+
+
 
 	BitBoard clone()
 	{
