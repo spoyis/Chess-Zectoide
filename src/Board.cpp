@@ -1,4 +1,4 @@
-#include "Board.h"
+#include "../include/Board.h"
 
 #define getColor(SDL_Color) SDL_Color.r, SDL_Color.g, SDL_Color.b, SDL_Color.a
 

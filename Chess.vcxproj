@@ -116,12 +116,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\SDL2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,38 +141,37 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Background.cpp" />
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="BoardState.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="GameRenderer.cpp" />
-    <ClCompile Include="GameState.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MoveGen.cpp" />
-    <ClCompile Include="PieceTextures.cpp" />
-    <ClCompile Include="SDLHandler.cpp" />
-    <ClCompile Include="ButtonFunctions.cpp" />
-    <ClCompile Include="TextureList.cpp" />
+    <ClCompile Include="src\Background.cpp" />
+    <ClCompile Include="src\Board.cpp" />
+    <ClCompile Include="src\BoardState.cpp" />
+    <ClCompile Include="src\Button.cpp" />
+    <ClCompile Include="src\ButtonFunctions.cpp" />
+    <ClCompile Include="src\GameRenderer.cpp" />
+    <ClCompile Include="src\GameState.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MoveGen.cpp" />
+    <ClCompile Include="src\PieceTextures.cpp" />
+    <ClCompile Include="src\SDLHandler.cpp" />
+    <ClCompile Include="src\TextureList.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Background.h" />
-    <ClInclude Include="BitBoard.h" />
-    <ClInclude Include="Board.h" />
-    <ClInclude Include="BoardState.h" />
-    <ClInclude Include="Button.h" />
-    <ClInclude Include="ButtonFunctions.h" />
-    <ClInclude Include="GameRenderer.h" />
-    <ClInclude Include="GameState.h" />
-    <ClInclude Include="HexConstants.h" />
-    <ClInclude Include="Move.h" />
-    <ClInclude Include="MoveList.h" />
-    <ClInclude Include="PieceTextures.h" />
-    <ClInclude Include="SDLHandler.h" />
-    <ClInclude Include="TextureList.h" />
+    <ClInclude Include="include\Background.h" />
+    <ClInclude Include="include\BitBoard.h" />
+    <ClInclude Include="include\Board.h" />
+    <ClInclude Include="include\BoardState.h" />
+    <ClInclude Include="include\Button.h" />
+    <ClInclude Include="include\ButtonFunctions.h" />
+    <ClInclude Include="include\GameState.h" />
+    <ClInclude Include="include\HexConstants.h" />
+    <ClInclude Include="include\Move.h" />
+    <ClInclude Include="include\MoveList.h" />
+    <ClInclude Include="include\PieceTextures.h" />
+    <ClInclude Include="include\SDLHandler.h" />
+    <ClInclude Include="include\TextureList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

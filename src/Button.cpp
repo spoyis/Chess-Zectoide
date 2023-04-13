@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "../include/Button.h"
 #include <iostream>
 
 void Button::Render(SDL_Renderer* renderer)

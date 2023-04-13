@@ -1,4 +1,4 @@
-#include "SDLHandler.h"
+#include "../include/SDLHandler.h"
 
 /* THIS FILE CONTAINS: FUNCTIONALITIES FOR THE BUTTON INSTANCES USED IN THE GUI */
 

@@ -1,4 +1,4 @@
-#include "SDLHandler.h"
+#include "../include/SDLHandler.h"
 #include <iostream>
 
 int SDLHandler::pollEvent()

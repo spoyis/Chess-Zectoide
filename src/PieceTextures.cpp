@@ -1,4 +1,4 @@
-#include "PieceTextures.h"
+#include "../include/PieceTextures.h"
 #include <iostream>
 
 void PieceTextures::renderPiece(int pieceId, int x, int y)

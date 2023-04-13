@@ -25,87 +25,84 @@
     <Filter Include="Source Files\texture classes">
       <UniqueIdentifier>{b2c82367-3b72-4856-bfc6-fcd54f0c41ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\namespace  chess\Move Generation">
-      <UniqueIdentifier>{2edfc266-0d8a-402f-86f6-18564953b8e9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SDLHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ButtonFunctions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
+    <ClCompile Include="src\BoardState.cpp">
       <Filter>Source Files\namespace chess</Filter>
     </ClCompile>
-    <ClCompile Include="Background.cpp">
-      <Filter>Source Files\texture classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Board.cpp">
-      <Filter>Source Files\texture classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>Source Files\texture classes</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureList.cpp">
-      <Filter>Source Files\texture classes</Filter>
-    </ClCompile>
-    <ClCompile Include="BoardState.cpp">
+    <ClCompile Include="src\GameState.cpp">
       <Filter>Source Files\namespace chess</Filter>
     </ClCompile>
-    <ClCompile Include="PieceTextures.cpp">
+    <ClCompile Include="src\PieceTextures.cpp">
       <Filter>Source Files\texture classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureList.cpp">
+      <Filter>Source Files\texture classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Background.cpp">
+      <Filter>Source Files\texture classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Board.cpp">
+      <Filter>Source Files\texture classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Button.cpp">
+      <Filter>Source Files\texture classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SDLHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ButtonFunctions.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SDLHandler.h">
+    <ClInclude Include="include\BitBoard.h">
+      <Filter>Header Files\namespace  chess</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BoardState.h">
+      <Filter>Header Files\namespace  chess</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Move.h">
+      <Filter>Header Files\namespace  chess</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MoveList.h">
+      <Filter>Header Files\namespace  chess</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HexConstants.h">
+      <Filter>Header Files\namespace  chess</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GameState.h">
+      <Filter>Header Files\namespace  chess</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Background.h">
+      <Filter>Header Files\texture classes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Board.h">
+      <Filter>Header Files\texture classes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PieceTextures.h">
+      <Filter>Header Files\texture classes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TextureList.h">
+      <Filter>Header Files\texture classes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Button.h">
+      <Filter>Header Files\texture classes</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ButtonFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ButtonFunctions.h">
+    <ClInclude Include="include\SDLHandler.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameState.h">
-      <Filter>Header Files\namespace  chess</Filter>
-    </ClInclude>
-    <ClInclude Include="Background.h">
-      <Filter>Header Files\texture classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Board.h">
-      <Filter>Header Files\texture classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>Header Files\texture classes</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureList.h">
-      <Filter>Header Files\texture classes</Filter>
-    </ClInclude>
-    <ClInclude Include="BoardState.h">
-      <Filter>Header Files\namespace  chess</Filter>
-    </ClInclude>
-    <ClInclude Include="BitBoard.h">
-      <Filter>Header Files\namespace  chess</Filter>
-    </ClInclude>
-    <ClInclude Include="HexConstants.h">
-      <Filter>Header Files\namespace  chess</Filter>
-    </ClInclude>
-    <ClInclude Include="PieceTextures.h">
-      <Filter>Header Files\texture classes</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveList.h">
-      <Filter>Header Files\namespace  chess\Move Generation</Filter>
-    </ClInclude>
-    <ClInclude Include="Move.h">
-      <Filter>Header Files\namespace  chess\Move Generation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

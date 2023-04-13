@@ -1,4 +1,4 @@
-#include "GameRenderer.h"
+#include "../include/GameRenderer.h"
 
 static constexpr char pieceChar[] = { 'k', 'q', 'r', 'b', 'n', 'p', 'K', 'Q', 'R', 'B', 'N', 'P' };
 void GameRenderer::render()

@@ -1,4 +1,4 @@
-#include "GameState.h"
+#include "../include/GameState.h"
 
 namespace chess
 {// begin namespace chess
