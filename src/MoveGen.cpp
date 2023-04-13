@@ -110,6 +110,21 @@ namespace chess
 
       return moves;
   }
+   
+  MoveList GameState::generateKnightMoves()
+  {
+      BitBoard Knights = boardState.board[knight + boardStateOffset];
+      MoveList moves(Knights.populationCount());
+
+      while (Knights.board)
+      {
+          auto piece = Knights.popBit();
+          BitBoard PossibleMoves{ BitBoard(KnightMoves::get[piece]) & (ENEMYBITBOARD + boardState.board[empty_board])};
+          moves.addMove(Move{ piece, PossibleMoves });
+      }
+
+      return moves;
+  }
 
   template<void (BitBoard::* direction)()>
   inline void chess::GameState::castRay(BitBoard& output, int startingSquare)

@@ -18,6 +18,7 @@ public:
 	MoveList generateRookMoves();
 	MoveList generateQueenMoves();
 	MoveList generateBishopMoves();
+	MoveList generateKnightMoves();
 	void make(int pieceId, unsigned long startSquare, unsigned long finalSquare);
 	bool makePawn(unsigned long startSquare, unsigned long finalSquare);
 	bool makeOrthodiagonal(unsigned long startSquare, unsigned long finalSquare);
@@ -44,7 +45,7 @@ constexpr MemFunctPtr methodPointers[] = {
 	&GameState::makeOrthodiagonal,//queen
 	&GameState::makeOrthodiagonal,//rook
 	&GameState::makeOrthodiagonal,//bishop
-	nullptr,//knight 
+	&GameState::makeOrthodiagonal,//knight 
 	&GameState::makePawn//pawn
 };
 

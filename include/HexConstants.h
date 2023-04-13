@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "BitBoard.h"
 
 namespace chess
 {
@@ -88,5 +89,44 @@ namespace chess
 	};
 													 
 	static constexpr uint64_t Not_A_File = file[0] ^ 0xFFFFFFFFFFFFFFFF;
+	static constexpr uint64_t Not_AB_File = (file[0] | file[1]) ^ 0xFFFFFFFFFFFFFFFF;
+	static constexpr uint64_t Not_GH_File = (file[6] | file[7]) ^ 0xFFFFFFFFFFFFFFFF;
 	static constexpr uint64_t Not_H_File = file[7] ^ 0xFFFFFFFFFFFFFFFF;
+	
+
+	namespace KnightMoves {
+		struct GeneratedMoves {
+			uint64_t move[64];
+
+			auto& operator[](int index) {
+				return move[index];
+			}
+
+			auto operator[](int index) const {
+				return move[index];
+			}
+		};
+
+		static constexpr GeneratedMoves generateKnightMoves() {
+			GeneratedMoves moves{};
+
+			for (uint64_t i = 0; i < 64; i++) {
+				uint64_t square = { 1ULL << i };
+
+				moves.move[i] |= ((square << 17) & Not_A_File);  // NORTH + NORTHEAST
+				moves.move[i] |= ((square << 10) & Not_AB_File);// NORTHEAST + EAST
+				moves.move[i] |= ((square >> 6)  & Not_AB_File); // SOUTHEAST + EAST
+				moves.move[i] |= ((square >> 15) & Not_A_File); // SOUTH + SOUTHEAST 
+				moves.move[i] |= ((square << 15) & Not_H_File);  // NORTH + NORTWEST 
+				moves.move[i] |= ((square << 6)  & Not_GH_File);// NORTHWEST + WEST
+				moves.move[i] |= ((square >> 10) & Not_GH_File); // SOUTHWEST + WEST
+				moves.move[i] |= ((square >> 17) & Not_H_File); // SOUTH + SOUTHWEST
+			}
+
+			return moves;
+		}
+
+		static constexpr GeneratedMoves get = generateKnightMoves();
+
+	}
 }

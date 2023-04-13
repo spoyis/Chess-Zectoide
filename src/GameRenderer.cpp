@@ -236,6 +236,9 @@ chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 	case chess::queen:
 		moves = game->generateQueenMoves();
 		break;
+	case chess::knight:
+		moves = game->generateKnightMoves();
+		break;
 	default:
 		break;
 	}
