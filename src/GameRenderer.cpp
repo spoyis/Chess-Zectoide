@@ -230,6 +230,12 @@ chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 	case chess::rook:
 		moves = game->generateRookMoves();
 		break;
+	case chess::bishop:
+		moves = game->generateBishopMoves();
+		break;
+	case chess::queen:
+		moves = game->generateQueenMoves();
+		break;
 	default:
 		break;
 	}

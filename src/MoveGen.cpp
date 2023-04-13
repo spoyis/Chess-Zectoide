@@ -75,11 +75,36 @@ namespace chess
           BitBoard PossibleMoves;
 
           auto piece = Bishops.popBit();
+          
+          castRay<&BitBoard::northwest>(PossibleMoves, piece);
+          castRay<&BitBoard::northeast>(PossibleMoves, piece);
+          castRay<&BitBoard::southeast>(PossibleMoves, piece);
+          castRay<&BitBoard::southwest>(PossibleMoves, piece);
+          moves.addMove(Move{ piece, PossibleMoves });
+      }
+
+      return moves;
+  }
+
+  MoveList GameState::generateQueenMoves()
+  {
+      BitBoard Queens = boardState.board[queen + boardStateOffset];
+      MoveList moves(Queens.populationCount());
+
+      while (Queens.board)
+      {
+          BitBoard PossibleMoves;
+
+          auto piece = Queens.popBit();
           //todo: swap for northeast, northwest, southeast, southwest.
           castRay<&BitBoard::north>(PossibleMoves, piece);
           castRay<&BitBoard::south>(PossibleMoves, piece);
           castRay<&BitBoard::west>(PossibleMoves, piece);
           castRay<&BitBoard::east>(PossibleMoves, piece);
+          castRay<&BitBoard::northwest>(PossibleMoves, piece);
+          castRay<&BitBoard::northeast>(PossibleMoves, piece);
+          castRay<&BitBoard::southeast>(PossibleMoves, piece);
+          castRay<&BitBoard::southwest>(PossibleMoves, piece);
           moves.addMove(Move{ piece, PossibleMoves });
       }
 

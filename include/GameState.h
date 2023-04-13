@@ -16,6 +16,7 @@ public:
 	BoardState boardState;
 	MoveList generatePawnMoves();
 	MoveList generateRookMoves();
+	MoveList generateQueenMoves();
 	MoveList generateBishopMoves();
 	void make(int pieceId, unsigned long startSquare, unsigned long finalSquare);
 	bool makePawn(unsigned long startSquare, unsigned long finalSquare);
@@ -40,9 +41,9 @@ typedef bool (GameState::* MemFunctPtr)(unsigned long, unsigned long);
 
 constexpr MemFunctPtr methodPointers[] = {
 	nullptr,//king
-	nullptr,//queen
+	&GameState::makeOrthodiagonal,//queen
 	&GameState::makeOrthodiagonal,//rook
-	nullptr,//bishop
+	&GameState::makeOrthodiagonal,//bishop
 	nullptr,//knight 
 	&GameState::makePawn//pawn
 };

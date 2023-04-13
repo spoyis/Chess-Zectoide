@@ -133,7 +133,25 @@ public:
 		board = (board << 1) & Not_A_File;
 	}
 
+	void northeast() 
+	{
+		board = (board << 9) & Not_A_File;
+	}
 
+	void northwest()
+	{
+		board = (board << 7) & Not_H_File;
+	}
+
+	void southeast() 
+	{
+		board = (board >> 7) & Not_A_File;
+	}
+
+	void southwest() 
+	{
+		board = (board >> 9) & Not_H_File;
+	}
 
 	BitBoard clone()
 	{
