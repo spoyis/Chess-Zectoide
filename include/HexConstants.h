@@ -22,6 +22,20 @@ namespace chess
 		return output;
 	}
 
+	static constexpr uint64_t generateConstant(int v1, int v2)
+	{
+		uint64_t output = 0ULL;
+		output |= (1ULL << v1) | (1ULL << v2);
+		return output;
+	}
+
+	static constexpr uint64_t generateConstant(int v1, int v2, int v3)
+	{
+		uint64_t output = 0ULL;
+		output |= (1ULL << v1) | (1ULL << v2) | (1ULL << v3);
+		return output;
+	}
+
 	static constexpr uint64_t file[]{
 		generateConstant(a1,a2,a3,a4,a5,a6,a7,a8), // a file
 		generateConstant(b1,b2,b3,b4,b5,b6,b7,b8), // b file
@@ -86,6 +100,28 @@ namespace chess
 		0,              // never used
 		0,             // never used
 		12            // pieces_offset --> black pieces
+	};
+
+	static constexpr uint64_t shortCastleRay[]
+	{
+		generateConstant(f8, g8), // squares the BLACK king moves for SHORT castle
+	    0,                 // never used
+		0,                // never used
+		0,               // never used
+		0,              // never used
+		0,             // never used
+		generateConstant(f1, g1)  // squares the WHITE king moves for SHORT caslte
+	};
+
+	static constexpr uint64_t longCastleRay[]
+	{
+		generateConstant(b8,c8,d8), // squares the BLACK king needs to be empty for LONG castle
+		0,                 // never used
+		0,                // never used
+		0,               // never used
+		0,              // never used
+		0,             // never used
+		generateConstant(b1,c1,d1)  // squares the WHITE king needs to be empty for LONG caslte
 	};
 													 
 	static constexpr uint64_t Not_A_File = file[0] ^ 0xFFFFFFFFFFFFFFFF;

@@ -14,6 +14,7 @@ public:
 	BitBoard() = default;
 	~BitBoard() = default;
 	BitBoard(uint64_t board) : board{ board } {};
+	BitBoard(unsigned long  square) : board{ ((1ULL << square)) } {};
 	// getter
 	const bool operator[](int boardId) const
 	{
@@ -26,14 +27,14 @@ public:
 		board = otherBoard;
 	}
 
-	BitBoard& operator +=(const int boardId)
+	BitBoard& operator +=(const unsigned long boardId)
 	{
 		board = board | (1ULL << boardId);
 		return *this;
 	}
 
 	// flips bit at boardId index in the mask
-	BitBoard& operator -=(const int boardId)
+	BitBoard& operator -=(const unsigned long boardId)
 	{
 		board = board ^ (1ULL << boardId);
 		return *this;
@@ -79,6 +80,11 @@ public:
 	{
 		BitBoard output(~this->board);
 		return output;
+	}
+
+	bool operator==(const BitBoard right) const
+	{
+		return this->board == right.board;
 	}
 	// returns number of ones in the bitboard
 	auto populationCount()

@@ -20,6 +20,7 @@ public:
 	MoveList generateBishopMoves();
 	MoveList generateKnightMoves();
 	MoveList generateKingMoves();
+	bool isThisSquareUnderAttack(unsigned long square);
 	void filterSelfChecks(unsigned long kingPos, MoveList& moves);
 	void make(int pieceId, unsigned long startSquare, unsigned long finalSquare);
 	bool makePawn(unsigned long startSquare, unsigned long finalSquare);
@@ -36,9 +37,11 @@ private:
 	unsigned long enPassantSquare{NO_EN_PASSANT};
 	unsigned long futureEnPassantSquare;
 	bool isBeingPromoted{};
+	bool longCastle[2] =  { true, true };
+	bool shortCastle[2] = { true, true };
 
 	template<void (BitBoard::* BitBoardFunctPtr)()>
-	inline void castRay(BitBoard& output, int startingSquare);
+	inline void castRay(BitBoard& output, unsigned long startingSquare);
 }; // end class GameState
 
 typedef bool (GameState::* MemFunctPtr)(unsigned long, unsigned long);
@@ -63,8 +66,9 @@ constexpr MemFunctPtr methodPointers[] = {
 
 #define ENEMYPAWNS        boardState.board[pawn   + (boardStateOffset ^ white_pieces_offset)]
 #define ENEMYROOKS        boardState.board[rook   + (boardStateOffset ^ white_pieces_offset)]
-#define ENEMYISHOPS       boardState.board[bishop + (boardStateOffset ^ white_pieces_offset)]
+#define ENEMYBISHOPS      boardState.board[bishop + (boardStateOffset ^ white_pieces_offset)]
 #define ENEMYKNIGHTS      boardState.board[knight + (boardStateOffset ^ white_pieces_offset)]
 #define ENEMYKING         boardState.board[king   + (boardStateOffset ^ white_pieces_offset)]
+#define ENEMYQUEENS       boardState.board[queen  + (boardStateOffset ^ white_pieces_offset)]
 
 }// end namespace chess

@@ -97,6 +97,38 @@ bool chess::GameState::makeOrthodiagonal(unsigned long startSquare, unsigned lon
 
 bool GameState::makeKing(unsigned long startSquare, unsigned long finalSquare)
 {
+	longCastle[whoseTurn] = false;
+	shortCastle[whoseTurn] = false;
+
+
+	if (startSquare - finalSquare == 2) // long castle
+	{
+		const auto oldRookSquare = finalSquare - 2;
+		const auto newRookSquare = finalSquare + 1;
+		// move rook
+		boardState.board[rook + boardStateOffset] += newRookSquare;
+		boardState.board[pieces_offset + whoseTurn] += newRookSquare;
+
+		boardState.board[rook + boardStateOffset] -= oldRookSquare;
+		boardState.board[pieces_offset + whoseTurn] -= oldRookSquare;
+		// move rook
+		return false;
+	}
+
+	if (finalSquare - startSquare == 2) // short castle
+	{
+		const auto oldRookSquare = finalSquare + 1;
+		const auto newRookSquare = finalSquare - 1;
+		// move rook
+		boardState.board[rook + boardStateOffset] += newRookSquare;
+		boardState.board[pieces_offset + whoseTurn] += newRookSquare;
+
+		boardState.board[rook + boardStateOffset] -= oldRookSquare;
+		boardState.board[pieces_offset + whoseTurn] -= oldRookSquare;
+
+		return false;
+	}
+
 	if (ENEMYBITBOARD[finalSquare])
 		return true;
 

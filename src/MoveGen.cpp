@@ -133,13 +133,76 @@ namespace chess
 
       auto kingPos = King.popBit();
       BitBoard PossibleMoves{ BitBoard(KingMoves::get[kingPos]) & (ENEMYBITBOARD + boardState.board[empty_board]) };
+
+      BitBoard longRay = { longCastleRay[boardStateOffset] };
+      if (longCastle[whoseTurn] and (longRay & boardState.board[empty_board]) == longRay) {
+          auto pos = kingPos;
+          bool attacked = isThisSquareUnderAttack(pos);
+          attacked |= isThisSquareUnderAttack(--pos);
+          attacked |= isThisSquareUnderAttack(--pos);
+          if (!attacked)
+              PossibleMoves += pos;
+      }
+
+      BitBoard shortRay = { shortCastleRay[boardStateOffset] };
+      shortRay.debug("SHORT CASTLE RAY");
+      if (shortCastle[whoseTurn] and (shortRay & boardState.board[empty_board]) == shortRay) {
+          auto pos = kingPos;
+          bool attacked = isThisSquareUnderAttack(pos);
+          attacked |= isThisSquareUnderAttack(++pos);
+          attacked |= isThisSquareUnderAttack(++pos);
+          if (!attacked)
+              PossibleMoves += pos;
+      }
+
       moves.addMove(Move{ kingPos, PossibleMoves });
       
       return moves;
   }
 
+  bool GameState::isThisSquareUnderAttack(unsigned long square)
+  {
+      BitBoard diagonals;
+      BitBoard orthogonals;
+      BitBoard squareBitboard(square);
+
+      castRay<&BitBoard::north>(orthogonals, square);
+      castRay<&BitBoard::south>(orthogonals, square);
+      castRay<&BitBoard::west>(orthogonals, square);
+      castRay<&BitBoard::east>(orthogonals, square);
+
+      castRay<&BitBoard::northwest>(diagonals, square);
+      castRay<&BitBoard::northeast>(diagonals, square);
+      castRay<&BitBoard::southeast>(diagonals, square);
+      castRay<&BitBoard::southwest>(diagonals, square);
+
+      BitBoard intersections;
+
+      // save intersection with enemy pieces that move diagonally
+      intersections += diagonals & (ENEMYBISHOPS + ENEMYQUEENS);
+      // save intersection with enemy pieces that move orthogonally
+      intersections += orthogonals & (ENEMYROOKS + ENEMYQUEENS);
+
+      // save intersection with enemy king moves
+      BitBoard King = ENEMYKING;
+      auto king = King.popBit();
+      intersections += squareBitboard & BitBoard(KingMoves::get[king]);
+
+      // save intersection with enemy knight moves
+      BitBoard Knights = ENEMYKNIGHTS;
+      BitBoard knightMoves;
+      while (Knights.board)
+      {
+          auto enemyknight = Knights.popBit();
+          knightMoves += BitBoard(KnightMoves::get[enemyknight]);
+      }
+      intersections += squareBitboard & knightMoves;
+
+      return intersections.board;
+  }
+
   template<void (BitBoard::* direction)()>
-  inline void chess::GameState::castRay(BitBoard& output, int startingSquare)
+  inline void chess::GameState::castRay(BitBoard& output, unsigned long startingSquare)
   {
       BitBoard square{ 1ULL << startingSquare };
       BitBoard ray;
