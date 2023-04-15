@@ -129,4 +129,40 @@ namespace chess
 		static constexpr GeneratedMoves get = generateKnightMoves();
 
 	}
+
+	namespace KingMoves {
+		struct GeneratedMoves {
+			uint64_t move[64];
+
+			auto& operator[](int index) {
+				return move[index];
+			}
+
+			auto operator[](int index) const {
+				return move[index];
+			}
+		};
+
+		static constexpr GeneratedMoves generateKingMoves() {
+			GeneratedMoves moves{};
+
+			for (uint64_t i = 0; i < 64; i++) {
+				uint64_t square = { 1ULL << i };
+
+				moves.move[i] |= ((square << 8)); // NORTH
+				moves.move[i] |= ((square >> 8));// SOUTH
+				moves.move[i] |= ((square >> 1) & Not_H_File); // WEST
+				moves.move[i] |= ((square << 1) & Not_A_File); // EAST
+				moves.move[i] |= ((square << 7) & Not_H_File); // NORTWEST 
+				moves.move[i] |= ((square << 9) & Not_A_File); // NORTHEAST
+				moves.move[i] |= ((square >> 9) & Not_H_File); // SOUTHWEST
+				moves.move[i] |= ((square >> 7) & Not_A_File); // SOUTHEAST
+			}
+
+			return moves;
+		}
+
+		static constexpr GeneratedMoves get = generateKingMoves();
+
+	}
 }

@@ -95,4 +95,12 @@ bool chess::GameState::makeOrthodiagonal(unsigned long startSquare, unsigned lon
 	return false;
 }
 
+bool GameState::makeKing(unsigned long startSquare, unsigned long finalSquare)
+{
+	if (ENEMYBITBOARD[finalSquare])
+		return true;
+
+	return false;
+}
+
 }// end namespace chess

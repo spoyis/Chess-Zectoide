@@ -19,9 +19,12 @@ public:
 	MoveList generateQueenMoves();
 	MoveList generateBishopMoves();
 	MoveList generateKnightMoves();
+	MoveList generateKingMoves();
+	void filterSelfChecks(unsigned long kingPos, MoveList& moves);
 	void make(int pieceId, unsigned long startSquare, unsigned long finalSquare);
 	bool makePawn(unsigned long startSquare, unsigned long finalSquare);
 	bool makeOrthodiagonal(unsigned long startSquare, unsigned long finalSquare);
+	bool makeKing(unsigned long startSquare, unsigned long finalSquare);
 	bool turnQuery(bool color) { return color == whoseTurn; }
 	int getBoardStateOffset() { return boardStateOffset; }
 	auto getPromotionState() { return  isBeingPromoted; };
@@ -41,7 +44,7 @@ private:
 typedef bool (GameState::* MemFunctPtr)(unsigned long, unsigned long);
 
 constexpr MemFunctPtr methodPointers[] = {
-	nullptr,//king
+	&GameState::makeKing,//king
 	&GameState::makeOrthodiagonal,//queen
 	&GameState::makeOrthodiagonal,//rook
 	&GameState::makeOrthodiagonal,//bishop
@@ -49,7 +52,19 @@ constexpr MemFunctPtr methodPointers[] = {
 	&GameState::makePawn//pawn
 };
 
-// macro below used in GameState methods
+// macros below used in GameState methods
 #define ENEMYBITBOARD     boardState.board[enemyPieceIndex[boardStateOffset]]
+
+#define ALLYPAWNS         boardState.board[pawn + boardStateOffset]
+#define ALLYROOKS         boardState.board[rook + boardStateOffset]
+#define ALLYBISHOPS       boardState.board[bishop + boardStateOffset]
+#define ALLYKNIGHTS       boardState.board[knight + boardStateOffset]
+#define ALLYKING          boardState.board[king + boardStateOffset]
+
+#define ENEMYPAWNS        boardState.board[pawn   + (boardStateOffset ^ white_pieces_offset)]
+#define ENEMYROOKS        boardState.board[rook   + (boardStateOffset ^ white_pieces_offset)]
+#define ENEMYISHOPS       boardState.board[bishop + (boardStateOffset ^ white_pieces_offset)]
+#define ENEMYKNIGHTS      boardState.board[knight + (boardStateOffset ^ white_pieces_offset)]
+#define ENEMYKING         boardState.board[king   + (boardStateOffset ^ white_pieces_offset)]
 
 }// end namespace chess

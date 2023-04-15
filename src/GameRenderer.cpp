@@ -219,7 +219,7 @@ chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 	//if (!game->turnQuery(playingAsWhite)) 
 		//return chess::BitBoard(); // not your turn lol, returns empty Bitboard
 
-	if (piece > chess::white_pieces_offset)
+	if (piece >= chess::white_pieces_offset)
 		piece -= chess::white_pieces_offset;
 	chess::MoveList moves;
 	switch (piece)
@@ -238,6 +238,9 @@ chess::BitBoard GameRenderer::getLegalMoves(int piece, int x, int y)
 		break;
 	case chess::knight:
 		moves = game->generateKnightMoves();
+		break;
+	case chess::king:
+		moves = game->generateKingMoves();
 		break;
 	default:
 		break;

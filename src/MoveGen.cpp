@@ -9,7 +9,7 @@ namespace chess
 
   MoveList chess::GameState::generatePawnMoves()
   {
-    BitBoard Pawns = boardState.board[pawn + boardStateOffset];
+    BitBoard Pawns = ALLYPAWNS;
     MoveList moves(Pawns.populationCount());
    
     #define PAWNDIRECTION     pawnMoveDirection[boardStateOffset]
@@ -47,7 +47,7 @@ namespace chess
 
   MoveList GameState::generateRookMoves()
   {
-      BitBoard Rooks = boardState.board[rook + boardStateOffset];
+      BitBoard Rooks = ALLYROOKS;
       MoveList moves(Rooks.populationCount());
 
       while (Rooks.board)
@@ -67,7 +67,7 @@ namespace chess
 
   MoveList GameState::generateBishopMoves()
   {
-      BitBoard Bishops = boardState.board[bishop + boardStateOffset];
+      BitBoard Bishops = ALLYBISHOPS;
       MoveList moves(Bishops.populationCount());
 
       while (Bishops.board)
@@ -113,7 +113,7 @@ namespace chess
    
   MoveList GameState::generateKnightMoves()
   {
-      BitBoard Knights = boardState.board[knight + boardStateOffset];
+      BitBoard Knights = ALLYKNIGHTS;
       MoveList moves(Knights.populationCount());
 
       while (Knights.board)
@@ -123,6 +123,18 @@ namespace chess
           moves.addMove(Move{ piece, PossibleMoves });
       }
 
+      return moves;
+  }
+
+  MoveList GameState::generateKingMoves()
+  {
+      BitBoard King = ALLYKING;
+      MoveList moves(1);
+
+      auto kingPos = King.popBit();
+      BitBoard PossibleMoves{ BitBoard(KingMoves::get[kingPos]) & (ENEMYBITBOARD + boardState.board[empty_board]) };
+      moves.addMove(Move{ kingPos, PossibleMoves });
+      
       return moves;
   }
 
@@ -180,4 +192,12 @@ namespace chess
       //ray.debug("CAPTURE RAY");
       output += ray;
   }
+
+
+
+ 
+  void GameState::filterSelfChecks(unsigned long kingPos, MoveList& moves)
+  {
+  }
+
 }
