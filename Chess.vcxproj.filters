@@ -25,6 +25,15 @@
     <Filter Include="Source Files\texture classes">
       <UniqueIdentifier>{b2c82367-3b72-4856-bfc6-fcd54f0c41ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\AI">
+      <UniqueIdentifier>{7326a4ce-515c-46db-825e-1bda64a7400b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AI\namespace heuristic">
+      <UniqueIdentifier>{c77e0030-c461-48ee-8c80-fd00b9d65a3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\namespace AI">
+      <UniqueIdentifier>{22dbe2f8-ac86-450f-9f5f-14e41b4d492e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BoardState.cpp">
@@ -62,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="src\MoveGen.cpp">
       <Filter>Source Files\namespace chess</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zectoide.cpp">
+      <Filter>Source Files\namespace AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="include\SDLHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\zectoide.h">
+      <Filter>Header Files\AI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

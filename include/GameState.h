@@ -1,6 +1,7 @@
 #pragma once
 #include "BoardState.h"
 #include "MoveList.h"
+#include <vector>
 
 #define NO_EN_PASSANT 100
 
@@ -20,6 +21,7 @@ public:
 	MoveList generateBishopMoves();
 	MoveList generateKnightMoves();
 	MoveList generateKingMoves();
+	std::vector<MoveList> getAllMoves();
 	bool isThisSquareUnderAttack(unsigned long square);
 	void filterSelfChecks(unsigned long kingPos, MoveList& moves);
 	void updateCastlingRights(unsigned long startSquare, unsigned long finalSquare);
@@ -30,6 +32,7 @@ public:
 	bool turnQuery(bool color) { return color == whoseTurn; }
 	int getBoardStateOffset() { return boardStateOffset; }
 	auto getPromotionState() { return  isBeingPromoted; };
+	bool wasTheLastMoveLegal();
 	void promote(int pieceId);
 private:
 	bool whoseTurn{WHITES_TURN};

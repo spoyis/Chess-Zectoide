@@ -25,7 +25,7 @@ void GameState::make(int pieceId, unsigned long startSquare, unsigned long final
 		// remove correct piece on the specific bitboard
 		BitBoard excludeFinalSquare{ 0xFFFFFFFFFFFFFFFF ^ (1ULL << finalSquare)};
 		BitBoard* piece = &boardState.board[white_pieces_offset - boardStateOffset];
-		excludeFinalSquare.debug("LOLOLOLOLOLOL");
+		//excludeFinalSquare.debug("LOLOLOLOLOLOL");
 		(piece++)->operator&=(excludeFinalSquare.board);     // king
 		(piece++)->operator&=(excludeFinalSquare.board);    // queen 
 		(piece++)->operator&=(excludeFinalSquare.board);   // rook 

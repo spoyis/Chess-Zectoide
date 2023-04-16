@@ -1,4 +1,5 @@
 #include "../include/GameRenderer.h"
+#include "../include/zectoide.h"
 
 static constexpr char pieceChar[] = { 'k', 'q', 'r', 'b', 'n', 'p', 'K', 'Q', 'R', 'B', 'N', 'P' };
 void GameRenderer::render()
@@ -132,6 +133,8 @@ void GameRenderer::releasePiece()
 				game->make(whichPieceIsBeingHeld - game->getBoardStateOffset(), OriginalSquare, move);
 				legalMove = true;
 				updatePieceMatrix();
+				AI::Zectoide* zectoide = new AI::Zectoide(*game, !playingAsWhite);
+				zectoide->startSearch();
 				break;
 			}
 		}

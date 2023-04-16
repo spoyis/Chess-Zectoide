@@ -159,8 +159,10 @@
     <ClCompile Include="src\PieceTextures.cpp" />
     <ClCompile Include="src\SDLHandler.cpp" />
     <ClCompile Include="src\TextureList.cpp" />
+    <ClCompile Include="src\zectoide.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\zectoide.h" />
     <ClInclude Include="include\Background.h" />
     <ClInclude Include="include\BitBoard.h" />
     <ClInclude Include="include\Board.h" />

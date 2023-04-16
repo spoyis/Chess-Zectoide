@@ -37,8 +37,7 @@ namespace chess
         PossibleMoves += (nextMove & boardState.board[empty_board]);
         // i hate pawns
       }
-      std::cout << "STARTINGSQUARE: " << piece << '\n';
-      PossibleMoves.debug("POSSIBLE MOVES");
+
       moves.addMove(Move{piece, PossibleMoves});
     }
 
@@ -160,6 +159,20 @@ namespace chess
       return moves;
   }
 
+  std::vector<MoveList> GameState::getAllMoves()
+  {
+      std::vector<MoveList> output(6);
+
+      output[king]   = generateKingMoves();
+      output[queen]  = generateQueenMoves();
+      output[rook]   = generateRookMoves();
+      output[bishop] = generateBishopMoves();
+      output[knight] = generateKnightMoves();
+      output[pawn]   = generatePawnMoves();
+
+      return output;
+  }
+
   bool GameState::isThisSquareUnderAttack(unsigned long square)
   {
       BitBoard diagonals;
@@ -257,7 +270,11 @@ namespace chess
   }
 
 
-
+  bool chess::GameState::wasTheLastMoveLegal()
+  {
+      auto enemyKing = ENEMYKING;
+      return !isThisSquareUnderAttack(enemyKing.popBit());
+  }
  
   void GameState::filterSelfChecks(unsigned long kingPos, MoveList& moves)
   {
