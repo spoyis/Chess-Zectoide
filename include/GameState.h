@@ -22,6 +22,7 @@ public:
 	MoveList generateKingMoves();
 	bool isThisSquareUnderAttack(unsigned long square);
 	void filterSelfChecks(unsigned long kingPos, MoveList& moves);
+	void updateCastlingRights(unsigned long startSquare, unsigned long finalSquare);
 	void make(int pieceId, unsigned long startSquare, unsigned long finalSquare);
 	bool makePawn(unsigned long startSquare, unsigned long finalSquare);
 	bool makeOrthodiagonal(unsigned long startSquare, unsigned long finalSquare);

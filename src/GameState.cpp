@@ -6,6 +6,7 @@ namespace chess
 void GameState::make(int pieceId, unsigned long startSquare, unsigned long finalSquare)
 {
 	futureEnPassantSquare = NO_EN_PASSANT;
+	updateCastlingRights(startSquare, finalSquare);
 
 	// update your own piece bitboard
 	// for your own color.
@@ -133,6 +134,40 @@ bool GameState::makeKing(unsigned long startSquare, unsigned long finalSquare)
 		return true;
 
 	return false;
+}
+
+void chess::GameState::updateCastlingRights(unsigned long startSquare, unsigned long finalSquare)
+{
+	auto squares = generateConstant(startSquare, finalSquare);
+	if (squares & startingRookSquares) {
+		switch (startSquare) {
+			case a1:
+				longCastle[WHITES_TURN] = false;
+				break;
+			case a8:
+				longCastle[BLACKS_TURN] = false;
+				break;
+			case h1:
+				shortCastle[WHITES_TURN] = false;
+				break;
+			case h8:
+				shortCastle[BLACKS_TURN] = false;
+		}
+
+		switch (finalSquare) {
+			case a1:
+				longCastle[WHITES_TURN] = false;
+				break;
+			case a8:
+				longCastle[BLACKS_TURN] = false;
+				break;
+			case h1:
+				shortCastle[WHITES_TURN] = false;
+				break;
+			case h8:
+				shortCastle[BLACKS_TURN] = false;
+		}
+	}
 }
 
 }// end namespace chess

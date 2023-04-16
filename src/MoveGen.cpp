@@ -145,7 +145,7 @@ namespace chess
       }
 
       BitBoard shortRay = { shortCastleRay[boardStateOffset] };
-      shortRay.debug("SHORT CASTLE RAY");
+      
       if (shortCastle[whoseTurn] and (shortRay & boardState.board[empty_board]) == shortRay) {
           auto pos = kingPos;
           bool attacked = isThisSquareUnderAttack(pos);
