@@ -30,6 +30,7 @@ namespace AI {
 			if (searchVariables.maxDepth == 100) break;
 		}
 
+		finishedSearching = true;
 	}
 
 	void Zectoide::search() 
@@ -131,17 +132,19 @@ namespace AI {
 	double Zectoide::search(double alpha, double beta) 
 	{
 		double eval = maximizingPlayer ? -DBL_MAX : DBL_MAX;
+
+		auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
+		if (!boardLegality) {
+			//std::cout << "ILLEGAL BOARD ACHIEVED\n";
+			return -eval;
+		}
+
 		if (searchVariables.currentDepth == searchVariables.maxDepth) {
 			return searchVariables.maximizingWhite
 				? Heuristic::pieceScore<true >(searchStates[searchVariables.currentDepth])
 				: Heuristic::pieceScore<false>(searchStates[searchVariables.currentDepth]);
 		}
 
-		auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
-		if (!boardLegality) {
-			return eval;
-		}
-		
 		// fetch moves
 		auto moves = searchStates[searchVariables.currentDepth].getAllMoves();
 

@@ -1,5 +1,4 @@
 #include "../include/GameRenderer.h"
-#include "../include/zectoide.h"
 
 static constexpr char pieceChar[] = { 'k', 'q', 'r', 'b', 'n', 'p', 'K', 'Q', 'R', 'B', 'N', 'P' };
 void GameRenderer::render()
@@ -133,8 +132,9 @@ void GameRenderer::releasePiece()
 				game->make(whichPieceIsBeingHeld - game->getBoardStateOffset(), OriginalSquare, move);
 				legalMove = true;
 				updatePieceMatrix();
-				AI::Zectoide* zectoide = new AI::Zectoide(*game, !playingAsWhite);
+				zectoide = new AI::Zectoide(*game, !playingAsWhite);
 				zectoide->startSearch();
+				waitingForZectoide = true;
 				break;
 			}
 		}
@@ -290,4 +290,21 @@ void GameRenderer::pollPromotion()
 	}
 	
 	
+}
+
+void GameRenderer::waitZectoide()
+{
+	if (zectoide->stoppedSearching()) {
+		auto bestMove = zectoide->getMove();
+
+		game->make(bestMove.pieceType, bestMove.originalSquare, bestMove.finalSquare);
+		if (bestMove.promotion)
+			game->promote(bestMove.promotedTo);
+
+		updatePieceMatrix();
+		bool legal = game->wasTheLastMoveLegal();
+		std::cout << "LAST MOVE WAS LEGAL? " << legal << '\n';
+		waitingForZectoide = false;
+		delete zectoide;
+	}
 }

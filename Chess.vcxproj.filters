@@ -122,5 +122,8 @@
     <ClInclude Include="include\heuristics.h">
       <Filter>Header Files\AI\namespace heuristic</Filter>
     </ClInclude>
+    <ClInclude Include="include\GameRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

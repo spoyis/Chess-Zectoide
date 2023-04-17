@@ -54,6 +54,9 @@ void SDLHandler::pollGameRendererEvents(SDL_Event& event)
         }
         case PLAYING:
         {
+            if (game->waitingForZectoide) {
+                return;
+            }
             int x, y;
             SDL_GetMouseState(&x, &y);
             if (game->isAPieceBeingHeld)
@@ -72,6 +75,9 @@ void SDLHandler::pollGameRendererEvents(SDL_Event& event)
 void SDLHandler::update()
 {
     SDL_RenderClear(renderer);
+
+    if (game->waitingForZectoide) 
+        game->waitZectoide();
 
     background->render();
     board->fillBoard();

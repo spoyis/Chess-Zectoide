@@ -162,6 +162,7 @@
     <ClCompile Include="src\zectoide.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\GameRenderer.h" />
     <ClInclude Include="include\heuristics.h" />
     <ClInclude Include="include\zectoide.h" />
     <ClInclude Include="include\Background.h" />

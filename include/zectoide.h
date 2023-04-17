@@ -11,24 +11,29 @@ namespace AI
 	class Zectoide {
 
 	public:
+
 		Zectoide(chess::GameState originalState, bool maximizingWhite) : searchStates{}, searchVariables{maximizingWhite} 
 		{
 			this->originalState = chess::GameState(originalState);
 		};
 		void startSearch();
-
-	private:
-		static constexpr int NO_CHOSEN_PIECE = -1;
+		bool stoppedSearching() { return finishedSearching; }
+		
 		struct BestMove {
 			int pieceType{ NO_CHOSEN_PIECE };
-			int originalSquare{0};
-			int finalSquare{0};
-			bool promotion{false};
+			int originalSquare{ 0 };
+			int finalSquare{ 0 };
+			bool promotion{ false };
 			int promotedTo{ NO_CHOSEN_PIECE };
 
 			BestMove() = default;
 		};
 
+		BestMove getMove() { return searchVariables.bestMove; }
+
+	private:
+		static constexpr int NO_CHOSEN_PIECE = -1;
+		
 		struct SearchVariables {
 			bool maximizingWhite;
 			int currentDepth{ 1 };
@@ -40,6 +45,7 @@ namespace AI
 		chess::GameState searchStates[100];
 		void iterativeDeepening();
 		SearchVariables searchVariables;
+		bool finishedSearching{ false };
 		
 		// depth 0 methods
 		void search();

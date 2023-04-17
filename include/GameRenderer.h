@@ -3,6 +3,7 @@
 #include "Button.h"
 #include "GameState.h"
 #include "PieceTextures.h"
+#include "zectoide.h"
 
 #define HASNT_STARTED 0
 #define PICKING_COLOR 1
@@ -37,10 +38,12 @@ public:
 	void releasePiece();
 	void setupGame(int color);
 	void pollPromotion();
+	void waitZectoide();
 
 	PieceTextures textures;
 	int gameRenderState{ HASNT_STARTED };
 	bool isAPieceBeingHeld{false};
+	bool waitingForZectoide{ false };
 	int whichPieceIsBeingHeld{false};
 	std::pair<int, int> heldPieceOriginalSquare{0,0};
 private:
@@ -61,5 +64,6 @@ private:
 	void pollBoardPosition(int* x, int* y);
 	chess::BitBoard getLegalMoves(int piece, int x, int y);
 	chess::BitBoard legalMoves;
+	AI::Zectoide* zectoide { nullptr };
 };
 
