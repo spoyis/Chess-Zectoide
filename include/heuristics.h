@@ -32,7 +32,7 @@ namespace AI::Heuristic
 		const double kingScore = (allyKingCount - enemyKingCount) * 30.0;
 		const double queenScore = (allyQueenCount - enemyQueenCount) * 9.0;
 		const double rookScore = (allyRookCount - enemyRookCount) * 5.0;
-		std::cout << "EVALUATIION ------------------" << pawnScore + bishopScore + knightScore + kingScore + queenScore + rookScore << "----------\n";
+		//std::cout << "EVALUATIION ------------------" << pawnScore + bishopScore + knightScore + kingScore + queenScore + rookScore << "----------\n";
 
 		return pawnScore + bishopScore + knightScore + kingScore + queenScore + rookScore;
 	}

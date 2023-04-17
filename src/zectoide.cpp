@@ -54,14 +54,15 @@ namespace AI {
 					piece.possibleMoves -= bestMove.finalSquare;
 
 					// recurse on best move
-					searchStates[1] = chess::GameState(originalState);
+					searchStates[1] = originalState;
 					searchStates[1].make(bestMove.pieceType ,bestMove.originalSquare, bestMove.finalSquare);
 
 					if (bestMove.promotion)
 						searchStates[1].promote(bestMove.promotedTo);
 
 					auto result = search<MINIMIZNG_PLAYER>(alpha, beta);
-					alpha = result;
+					eval = alpha = result;
+					break;
 				}
 			}
 		}
@@ -138,6 +139,7 @@ namespace AI {
 
 		auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
 		if (!boardLegality) {
+			//std::cout << "--- ILLEGAL MOVE ---\n";
 			return eval;
 		}
 		
@@ -218,7 +220,7 @@ namespace AI {
 	inline double Zectoide::recurse(double& alpha, double& beta, double& eval, int pieceID, unsigned long originalSquare, unsigned long finalSquare)
 	{
 		const auto currentDepth = ++searchVariables.currentDepth;
-		searchStates[currentDepth] = chess::GameState(originalState);
+		searchStates[currentDepth] = searchStates[currentDepth - 1];
 		searchStates[currentDepth].make(pieceID, originalSquare, finalSquare);
 
 		return search<maximizingPlayer>(alpha, beta);
@@ -228,7 +230,7 @@ namespace AI {
 	inline void Zectoide::recursePawn(double& alpha, double& beta, double& eval, int pieceID, unsigned long originalSquare, unsigned long finalSquare)
 	{
 		const auto currentDepth = ++searchVariables.currentDepth;
-		searchStates[currentDepth] = chess::GameState(originalState);
+		searchStates[currentDepth] = searchStates[currentDepth - 1];
 		searchStates[currentDepth].make(pieceID, originalSquare, finalSquare);
 
 	}
