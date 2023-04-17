@@ -192,4 +192,7 @@ namespace chess
 		static constexpr GeneratedMoves get = generateKingMoves();
 
 	}
+
+	static constexpr uint64_t innerCenterSquares = generateConstant(d4, d5, e4, e5);
+	static constexpr uint64_t outerCenterSquares = generateConstant(d3, d6, e3, e6, c3, c4, c5 ,c6, f3, f4, f5, f6);
 }

@@ -3,8 +3,12 @@
 
 namespace AI::Heuristic 
 {
+
+	#define INNER_CENTER_BONUS 3
+	#define OUTER_CENTER_BONUS 1
+	
 	template<bool evalForWhite>
-	double pieceScore(chess::GameState& game) 
+	double inline pieceScore(chess::GameState& game) 
 	{
 		
 		const int allyOffset = evalForWhite ? chess::white_pieces_offset : 0;
@@ -29,7 +33,7 @@ namespace AI::Heuristic
 		const double pawnScore = (allyPawnCount - enemyPawnCount);
 		const double bishopScore = (allyBishopCount - enemyBishopCount) * 3.3;
 		const double knightScore = (allyKnightCount - enemyKnightCount) * 3.0;
-		const double kingScore = (allyKingCount - enemyKingCount) * 30.0;
+		const double kingScore = (allyKingCount - enemyKingCount) * 3000.0;
 		const double queenScore = (allyQueenCount - enemyQueenCount) * 9.0;
 		const double rookScore = (allyRookCount - enemyRookCount) * 5.0;
 		//std::cout << "EVALUATIION ------------------" << pawnScore + bishopScore + knightScore + kingScore + queenScore + rookScore << "----------\n";
@@ -37,4 +41,25 @@ namespace AI::Heuristic
 		return pawnScore + bishopScore + knightScore + kingScore + queenScore + rookScore;
 	}
 
+
+	// TODO: FOR SOME REASON, THIS IS RETURNING THE VALUE FLIPPED, SOLVE THIS 
+	template<bool evalForWhite>
+	double inline centerScore(chess::GameState& game) {
+
+		const int allyOffset = evalForWhite ? chess::pieces_offset + 1 : chess::pieces_offset;
+		const int enemyOffset = evalForWhite ? chess::pieces_offset : chess::pieces_offset + 1;
+
+		const auto innerCenterAlly = (game.boardState.board[allyOffset] & chess::BitBoard(chess::innerCenterSquares)).populationCount();
+		const auto innerCenterEnemy = (game.boardState.board[enemyOffset] & chess::BitBoard(chess::innerCenterSquares)).populationCount();
+
+		const auto outerCenterAlly = (game.boardState.board[allyOffset] & chess::BitBoard(chess::outerCenterSquares)).populationCount();
+		const auto outerCenterEnemy = (game.boardState.board[enemyOffset] & chess::BitBoard(chess::outerCenterSquares)).populationCount();
+
+		return (innerCenterAlly - innerCenterEnemy) * INNER_CENTER_BONUS + (outerCenterAlly - outerCenterEnemy) * OUTER_CENTER_BONUS;
+	}
+
+	template<bool evalForWhite>
+	double inline eval(chess::GameState& game) {
+		return -centerScore<evalForWhite>(game) + pieceScore<evalForWhite>(game);
+	}
 }

@@ -14,7 +14,7 @@ namespace AI {
 
 	void Zectoide::iterativeDeepening()
 	{
-		static constexpr double maxSearchTime = 1.5;
+		static constexpr double maxSearchTime = 0.5;
 
 		std::clock_t start = std::clock();
 		double duration = 0;
@@ -25,7 +25,7 @@ namespace AI {
 
 			duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 			searchVariables.maxDepth++;
-			std::cout << "ZOOM " << searchVariables.maxDepth << '\n';
+			std::cout << "DEPTH: " << searchVariables.maxDepth - 1 << '\n';
 			std::cout << "BEST MOVE: " << searchVariables.bestMove.pieceType << " FROM " << searchVariables.bestMove.originalSquare << " TO " << searchVariables.bestMove.finalSquare << '\n';
 			if (searchVariables.maxDepth == 100) break;
 		}
@@ -141,8 +141,8 @@ namespace AI {
 
 		if (searchVariables.currentDepth == searchVariables.maxDepth) {
 			return searchVariables.maximizingWhite
-				? Heuristic::pieceScore<true >(searchStates[searchVariables.currentDepth])
-				: Heuristic::pieceScore<false>(searchStates[searchVariables.currentDepth]);
+				? Heuristic::eval<true >(searchStates[searchVariables.currentDepth])
+				: Heuristic::eval<false>(searchStates[searchVariables.currentDepth]);
 		}
 
 		// fetch moves
