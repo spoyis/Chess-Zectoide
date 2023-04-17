@@ -15,33 +15,17 @@ namespace chess
 		a8, b8, c8, d8, e8, f8, g8, h8
 	};
 
-	static constexpr uint64_t generateConstant(int v1, int v2, int v3, int v4, int v5, int v6, int v7, int v8)
-	{
-		uint64_t output = 0ULL;
-		output |= (1ULL << v1) | (1ULL << v2) | (1ULL << v3) | (1ULL << v4) | (1ULL << v5) | (1ULL << v6) | (1ULL << v7) | (1ULL << v8);
-		return output;
+	template<typename T>
+	static constexpr uint64_t generateConstant(T arg) {
+		return (1ULL << arg);
 	}
 
-	static constexpr uint64_t generateConstant(int v1, int v2)
-	{
-		uint64_t output = 0ULL;
-		output |= (1ULL << v1) | (1ULL << v2);
-		return output;
+	template<typename T, typename... Args>
+	static constexpr uint64_t generateConstant(T start, Args... args) {
+		return (1ULL << start) | generateConstant(args...);
 	}
 
-	static constexpr uint64_t generateConstant(int v1, int v2, int v3)
-	{
-		uint64_t output = 0ULL;
-		output |= (1ULL << v1) | (1ULL << v2) | (1ULL << v3);
-		return output;
-	}
 
-	static constexpr uint64_t generateConstant(int v1, int v2, int v3, int v4)
-	{
-		uint64_t output = 0ULL;
-		output |= (1ULL << v1) | (1ULL << v2) | (1ULL << v3) | (1ULL << v4);
-		return output;
-	}
 
 	static constexpr uint64_t file[]{
 		generateConstant(a1,a2,a3,a4,a5,a6,a7,a8), // a file

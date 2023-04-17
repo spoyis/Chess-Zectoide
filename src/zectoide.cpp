@@ -14,7 +14,7 @@ namespace AI {
 
 	void Zectoide::iterativeDeepening()
 	{
-		static constexpr double maxSearchTime = 2.0;
+		static constexpr double maxSearchTime = 1.5;
 
 		std::clock_t start = std::clock();
 		double duration = 0;
