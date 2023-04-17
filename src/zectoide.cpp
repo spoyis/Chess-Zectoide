@@ -139,7 +139,6 @@ namespace AI {
 
 		auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
 		if (!boardLegality) {
-			//std::cout << "--- ILLEGAL MOVE ---\n";
 			return eval;
 		}
 		

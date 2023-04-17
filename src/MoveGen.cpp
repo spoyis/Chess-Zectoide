@@ -198,9 +198,11 @@ namespace chess
 
       // save intersection with enemy king moves
       BitBoard King = ENEMYKING;
-      auto king = King.popBit();
-      intersections += squareBitboard & BitBoard(KingMoves::get[king]);
-
+      if (King.board != 0) { // TODO: FIX THIS SHIT
+                            // THIS IS HAPPENING BECAUSE THERES NO GAME OVER STATE IN GAMESTATE, THE SEARCH TRIES TO SEE IF A CAPTURED KING IS UNDER ATTACK, AND THAT DOESN'T MAKE ANY SENSE.
+          auto king = King.popBit();
+          intersections += squareBitboard & BitBoard(KingMoves::get[king]);
+      }
       // save intersection with enemy knight moves
       BitBoard Knights = ENEMYKNIGHTS;
       BitBoard knightMoves;
