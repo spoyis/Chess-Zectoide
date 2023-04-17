@@ -119,5 +119,8 @@
     <ClInclude Include="include\zectoide.h">
       <Filter>Header Files\AI</Filter>
     </ClInclude>
+    <ClInclude Include="include\heuristics.h">
+      <Filter>Header Files\AI\namespace heuristic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

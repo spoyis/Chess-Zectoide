@@ -1,10 +1,12 @@
 #pragma once
 
 #include "GameState.h"
+#include "../include/heuristics.h"
 
 namespace AI
 { // begin namespace zectoide
 	static constexpr bool MINIMIZNG_PLAYER = false;
+	static constexpr bool MAXIMIZING_PLAYER = true;
 
 	class Zectoide {
 

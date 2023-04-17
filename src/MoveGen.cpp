@@ -273,7 +273,13 @@ namespace chess
   bool chess::GameState::wasTheLastMoveLegal()
   {
       auto enemyKing = ENEMYKING;
-      return !isThisSquareUnderAttack(enemyKing.popBit());
+
+      // VERY DANGEROUS CODE, DO NOT CHANGE
+      // TEMPORARILY CHANGE THE OFFSETS
+      boardStateOffset ^= white_pieces_offset;
+      auto output = !isThisSquareUnderAttack(enemyKing.popBit());
+      boardStateOffset ^= white_pieces_offset;
+      return output;
   }
  
   void GameState::filterSelfChecks(unsigned long kingPos, MoveList& moves)

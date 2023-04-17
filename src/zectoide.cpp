@@ -14,7 +14,7 @@ namespace AI {
 
 	void Zectoide::iterativeDeepening()
 	{
-		static constexpr double maxSearchTime = 5.0;
+		static constexpr double maxSearchTime = 2.0;
 
 		std::clock_t start = std::clock();
 		double duration = 0;
@@ -26,6 +26,7 @@ namespace AI {
 			duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 			searchVariables.maxDepth++;
 			std::cout << "ZOOM " << searchVariables.maxDepth << '\n';
+			std::cout << "BEST MOVE: " << searchVariables.bestMove.pieceType << " FROM " << searchVariables.bestMove.originalSquare << " TO " << searchVariables.bestMove.finalSquare << '\n';
 			if (searchVariables.maxDepth == 100) break;
 		}
 
@@ -42,7 +43,7 @@ namespace AI {
 
 		// fetch moves
 		auto moves = originalState.getAllMoves();
-		searchStates[0] = originalState;
+		searchStates[0] = chess::GameState(originalState);
 
 		// check if bestmove is set
 		if (searchVariables.bestMove.pieceType != NO_CHOSEN_PIECE) {
@@ -67,58 +68,60 @@ namespace AI {
 
 		for (int pieceType = 0; pieceType != chess::pawn; pieceType++) {
 			for (auto piece : moves[pieceType]){
+				while (piece.possibleMoves.board){
+					auto finalSquare = piece.possibleMoves.popBit();
+					auto result = recurse<MINIMIZNG_PLAYER>(alpha, beta, eval, pieceType, piece.initialSquare, finalSquare);
+					--searchVariables.currentDepth;
 
-				auto finalSquare = piece.possibleMoves.popBit();
-				auto result = recurse<MINIMIZNG_PLAYER>(alpha, beta, eval, pieceType, piece.initialSquare, finalSquare);
-				--searchVariables.currentDepth;
-
-				if (result > eval)
-				{
-					searchVariables.bestMove.pieceType = pieceType;
-					searchVariables.bestMove.originalSquare = piece.initialSquare;
-					searchVariables.bestMove.finalSquare = finalSquare;
-					searchVariables.bestMove.promotion = false;
-					eval = result;
-				}
+					if (result > eval)
+					{
+						searchVariables.bestMove.pieceType = pieceType;
+						searchVariables.bestMove.originalSquare = piece.initialSquare;
+						searchVariables.bestMove.finalSquare = finalSquare;
+						searchVariables.bestMove.promotion = false;
+						eval = result;
+					}
 				
-				alpha = std::max(alpha, result);
+					alpha = std::max(alpha, result);
+				}
 			}
 		}
 		
 		for (auto piece : moves[chess::pawn]) {
+			while (piece.possibleMoves.board) {
+				auto finalSquare = piece.possibleMoves.popBit();
+				recursePawn<MINIMIZNG_PLAYER>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare);
+				int loopAmount = 1;
 
-			auto finalSquare = piece.possibleMoves.popBit();
-			recursePawn<MINIMIZNG_PLAYER>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare);
-			int loopAmount = 1;
+				if (searchStates[1].getPromotionState()) loopAmount = 4;
 
-			if (searchStates[1].getPromotionState()) loopAmount = 4;
+				for (long i = 1; i <= loopAmount; i++) {
+					double result;
 
-			for (long i = 1; i <= loopAmount; i++) {
-				double result;
-
-				if (loopAmount == 4) 
-					result = promote<MINIMIZNG_PLAYER>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare, i - 1);
-				else 
-					result = search<MINIMIZNG_PLAYER>(alpha, beta);
-
-				--searchVariables.currentDepth;
-				if (result > eval)
-				{
-					searchVariables.bestMove.pieceType = chess::pawn;
-					searchVariables.bestMove.originalSquare = piece.initialSquare;
-					searchVariables.bestMove.finalSquare = finalSquare;
-					if (loopAmount == 4) {
-						searchVariables.bestMove.promotion = true;
-						searchVariables.bestMove.promotedTo = loopAmount;
-					}
+					if (loopAmount == 4)
+						result = promote<MINIMIZNG_PLAYER>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare, i - 1);
 					else
-						searchVariables.bestMove.promotion = false;
-					
-					eval = result;
-				}
+						result = search<MINIMIZNG_PLAYER>(alpha, beta);
 
-				
-				alpha = std::max(alpha, result);
+					--searchVariables.currentDepth;
+					if (result > eval)
+					{
+						searchVariables.bestMove.pieceType = chess::pawn;
+						searchVariables.bestMove.originalSquare = piece.initialSquare;
+						searchVariables.bestMove.finalSquare = finalSquare;
+						if (loopAmount == 4) {
+							searchVariables.bestMove.promotion = true;
+							searchVariables.bestMove.promotedTo = loopAmount;
+						}
+						else
+							searchVariables.bestMove.promotion = false;
+
+						eval = result;
+					}
+
+
+					alpha = std::max(alpha, result);
+				}
 			}
 		}
 	}
@@ -127,76 +130,83 @@ namespace AI {
 	double Zectoide::search(double alpha, double beta) 
 	{
 		double eval = maximizingPlayer ? -DBL_MAX : DBL_MAX;
-		if (searchVariables.currentDepth == searchVariables.maxDepth) return eval;
+		if (searchVariables.currentDepth == searchVariables.maxDepth) {
+			return searchVariables.maximizingWhite
+				? Heuristic::pieceScore<true >(searchStates[searchVariables.currentDepth])
+				: Heuristic::pieceScore<false>(searchStates[searchVariables.currentDepth]);
+		}
 
 		auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
 		if (!boardLegality) {
-			return maximizingPlayer ? -DBL_MAX : DBL_MAX;
+			return eval;
 		}
 		
 		// fetch moves
-		auto moves = originalState.getAllMoves();
+		auto moves = searchStates[searchVariables.currentDepth].getAllMoves();
 
 		// search as normal 
 		for (int pieceType = 0; pieceType != chess::pawn; pieceType++) {
 			for (auto piece : moves[pieceType]) {
-				auto result = recurse<maximizingPlayer>(alpha, beta, eval, pieceType, piece.initialSquare, piece.possibleMoves.popBit());
-				searchVariables.currentDepth--;
+				while (piece.possibleMoves.board) {
+					auto result = recurse<!maximizingPlayer>(alpha, beta, eval, pieceType, piece.initialSquare, piece.possibleMoves.popBit());
+					searchVariables.currentDepth--;
 
-				if (maximizingPlayer)
-				{
-					if (result > eval) eval = result;
-					if (eval > alpha) alpha = eval;
+					if (maximizingPlayer)
+					{
+						if (result > eval) eval = result;
+						if (eval > alpha) alpha = eval;
 
-					if (alpha >= beta) {
-						return alpha;
+						if (alpha >= beta) {
+							return alpha;
+						}
 					}
-				}
-				else
-				{
-					if (result < eval) eval = result;
-					if (eval < beta) beta = eval;
+					else
+					{
+						if (result < eval) eval = result;
+						if (eval < beta) beta = eval;
 
-					if (alpha >= beta) 
-						return beta;
-					
+						if (alpha >= beta)
+							return beta;
+
+					}
 				}
 			}
 		}
 
 		for (auto piece : moves[chess::pawn]) {
+			while (piece.possibleMoves.board) {
+				auto finalSquare = piece.possibleMoves.popBit();
+				recursePawn<!maximizingPlayer>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare);
+				int loopAmount = 1;
 
-			auto finalSquare = piece.possibleMoves.popBit();
-			recursePawn<maximizingPlayer>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare);
-			int loopAmount = 1;
+				if (searchStates[1].getPromotionState()) loopAmount = 4;
 
-			if (searchStates[1].getPromotionState()) loopAmount = 4;
+				for (long i = 1; i <= loopAmount; i++) {
+					double result;
 
-			for (long i = 1; i <= loopAmount; i++) {
-				double result;
+					if (loopAmount == 4)
+						result = promote<!maximizingPlayer>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare, i - 1);
+					else
+						result = search<!maximizingPlayer>(alpha, beta);
 
-				if (loopAmount == 4)
-					result = promote<MINIMIZNG_PLAYER>(alpha, beta, eval, chess::pawn, piece.initialSquare, finalSquare, i - 1);
-				else
-					result = search<MINIMIZNG_PLAYER>(alpha, beta);
+					--searchVariables.currentDepth;
 
-				--searchVariables.currentDepth;
+					if (maximizingPlayer)
+					{
+						if (result > eval) eval = result;
+						if (eval > alpha) alpha = eval;
 
-				if (maximizingPlayer)
-				{
-					if (result > eval) eval = result;
-					if (eval > alpha) alpha = eval;
+						if (alpha >= beta)
+							return alpha;
+					}
+					else
+					{
+						if (result < eval) eval = result;
+						if (eval < beta) beta = eval;
 
-					if (alpha >= beta)
-						return alpha;
-				}
-				else
-				{
-					if (result < eval) eval = result;
-					if (eval < beta) beta = eval;
-
-					if (alpha >= beta)
-						return beta;
+						if (alpha >= beta)
+							return beta;
+					}
 				}
 			}
 		}
@@ -211,7 +221,7 @@ namespace AI {
 		searchStates[currentDepth] = chess::GameState(originalState);
 		searchStates[currentDepth].make(pieceID, originalSquare, finalSquare);
 
-		return search<!maximizingPlayer>(alpha, beta);
+		return search<maximizingPlayer>(alpha, beta);
 	}
 
 	template<bool maximizingPlayer>
@@ -229,6 +239,6 @@ namespace AI {
 		const auto currentDepth = searchVariables.currentDepth;
 		searchStates[currentDepth].promote(promotionPieces[promotionIndex]);
 		
-		return search<!maximizingPlayer>(alpha, beta);
+		return search<maximizingPlayer>(alpha, beta);
 	}
 }
