@@ -23,12 +23,13 @@ namespace AI {
 
 		while (duration < maxSearchTime)
 		{
-			search<true, true>(-DBL_MAX, DBL_MAX, 0);
+			const auto result = search<true, true>(-DBL_MAX, DBL_MAX, 0);
 
 			duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 			searchVariables.maxDepth++;
 			std::cout << "DEPTH: " << searchVariables.maxDepth - 1 << '\n';
 			std::cout << "BEST MOVE: " << searchVariables.bestMove.pieceType << " FROM " << searchVariables.bestMove.originalSquare << " TO " << searchVariables.bestMove.finalSquare << '\n';
+			std::cout << "WITH EVAL: " << result << '\n';
 			if (searchVariables.maxDepth == 100) break;
 		}
 
@@ -98,21 +99,19 @@ namespace AI {
 					}
 					else  // node is NOT root
 					{
-						if (maximizingPlayer){
+						if (maximizingPlayer) {
 							if (result > eval) eval = result;
 							if (eval > alpha) alpha = eval;
 
-							if (alpha >= beta) {
-								return alpha;
-							}
+							if (eval >= beta)
+								return eval;
 						}
-						else{
+						else {
 							if (result < eval) eval = result;
 							if (eval < beta) beta = eval;
 
-							if (alpha >= beta)
-								return beta;
-
+							if (eval <= alpha)
+								return eval;
 						}
 					}
 				}
@@ -164,19 +163,19 @@ namespace AI {
 					}
 					else
 					{
-						if (maximizingPlayer){
+						if (maximizingPlayer) {
 							if (result > eval) eval = result;
 							if (eval > alpha) alpha = eval;
 
-							if (alpha >= beta)
-								return alpha;
+							if (eval >= beta)
+								return eval;
 						}
-						else{
+						else {
 							if (result < eval) eval = result;
 							if (eval < beta) beta = eval;
 
-							if (alpha >= beta)
-								return beta;
+							if (eval <= alpha)
+								return eval;
 						}
 					}
 				}

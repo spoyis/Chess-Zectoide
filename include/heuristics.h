@@ -53,24 +53,23 @@ namespace AI::Heuristic
 	}
 
 
-	// TODO: FOR SOME REASON, THIS IS RETURNING THE VALUE FLIPPED, SOLVE THIS 
 	template<bool evalForWhite>
 	double inline centerScore(chess::GameState& game) {
 
 		const int allyOffset = evalForWhite ? chess::pieces_offset + 1 : chess::pieces_offset;
 		const int enemyOffset = evalForWhite ? chess::pieces_offset : chess::pieces_offset + 1;
 
-		const auto innerCenterAlly = (game.boardState.board[allyOffset] & chess::BitBoard(chess::innerCenterSquares)).populationCount();
-		const auto innerCenterEnemy = (game.boardState.board[enemyOffset] & chess::BitBoard(chess::innerCenterSquares)).populationCount();
+		const double innerCenterAlly = (game.boardState.board[allyOffset] & chess::BitBoard(chess::innerCenterSquares)).populationCount();
+		const double innerCenterEnemy = (game.boardState.board[enemyOffset] & chess::BitBoard(chess::innerCenterSquares)).populationCount();
 
-		const auto outerCenterAlly = (game.boardState.board[allyOffset] & chess::BitBoard(chess::outerCenterSquares)).populationCount();
-		const auto outerCenterEnemy = (game.boardState.board[enemyOffset] & chess::BitBoard(chess::outerCenterSquares)).populationCount();
+		const double outerCenterAlly = (game.boardState.board[allyOffset] & chess::BitBoard(chess::outerCenterSquares)).populationCount();
+		const double outerCenterEnemy = (game.boardState.board[enemyOffset] & chess::BitBoard(chess::outerCenterSquares)).populationCount();
 
 		return (innerCenterAlly - innerCenterEnemy) * INNER_CENTER_BONUS + (outerCenterAlly - outerCenterEnemy) * OUTER_CENTER_BONUS;
 	}
 
 	template<bool evalForWhite>
 	double inline eval(chess::GameState& game) {
-		return -centerScore<evalForWhite>(game) + pieceScore<evalForWhite>(game) + randomEval();
+		return centerScore<evalForWhite>(game) + pieceScore<evalForWhite>(game);// +randomEval();
 	}
 }
