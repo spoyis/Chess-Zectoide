@@ -16,7 +16,7 @@ void Board::fillBoard(std::pair<int,int> lastMoveBegin, std::pair<int, int> last
     {
         for (int j = 0; j < 8; j++)
         {
-            std::cout << lastMoveBegin.first <<  " | " << lastMoveBegin.second << "   &&   " <<  lastMoveEnd.first << " | " << lastMoveEnd.second << '\n';
+            
             SDL_Rect rect = {start_x, start_y, squareSize, squareSize};
             bool movedSquare = (j == lastMoveBegin.first && i == lastMoveBegin.second) || (j == lastMoveEnd.first && i == lastMoveEnd.second);
             if ((j + i) % 2 == 0)
