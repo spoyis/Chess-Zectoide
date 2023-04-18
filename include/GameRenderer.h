@@ -46,6 +46,9 @@ public:
 	bool waitingForZectoide{ false };
 	int whichPieceIsBeingHeld{false};
 	std::pair<int, int> heldPieceOriginalSquare{0,0};
+
+	auto getLastMoveBegin() { return lastMoveBeginSquare; };
+	auto getLastMoveEnd() { return lastMoveEndSquare; };
 private:
 	std::map<char, int> whichIndex;
 	int boardStart{100}; // first line where the board is rendered
@@ -61,9 +64,12 @@ private:
 	char piece[8][8];
 	void updatePieceMatrix();
 	void setupMap();
+	void saveLastMoveSquares(int begin, int end);
 	void pollBoardPosition(int* x, int* y);
 	chess::BitBoard getLegalMoves(int piece, int x, int y);
 	chess::BitBoard legalMoves;
 	AI::Zectoide* zectoide { nullptr };
+	std::pair<int, int> lastMoveBeginSquare{ -1, -1 };
+	std::pair<int, int> lastMoveEndSquare{ -1, -1 };
 };
 

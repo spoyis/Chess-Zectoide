@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include "../include/GameState.h"
 
 #define white 215,220,230,0
 #define black 40,40,40,0
@@ -26,7 +27,7 @@ public:
 		squareSize = width / 8;
 		boardStart = 100;
 	}
-	void fillBoard();
+	void fillBoard(std::pair<int, int> lastMoveBegin, std::pair<int, int> lastMoveEnd);
 	void changeColors(SDL_Color color1, SDL_Color color2);
 
 private:

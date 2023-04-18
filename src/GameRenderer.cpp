@@ -129,6 +129,7 @@ void GameRenderer::releasePiece()
 			{
 				piece[y][x] = pieceChar[whichPieceIsBeingHeld];
 				auto OriginalSquare = heldPieceOriginalSquare.first * 8 + heldPieceOriginalSquare.second;
+				saveLastMoveSquares(OriginalSquare, move);
 				game->make(whichPieceIsBeingHeld - game->getBoardStateOffset(), OriginalSquare, move);
 				legalMove = true;
 				updatePieceMatrix();
@@ -191,6 +192,25 @@ void GameRenderer::setupMap()
 	whichIndex['N'] = chess::knight + chess::white_pieces_offset;
 
 	whichIndex['0'] = -1;
+}
+
+void GameRenderer::saveLastMoveSquares(int begin, int end)
+{	
+	int xBegin = (begin % 8), yBegin = (begin / 8);
+	int xEnd = (end % 8), yEnd = (end/ 8);
+	if (playingAsWhite)
+	{
+		yBegin = abs(yBegin - 7);
+		yEnd   = abs(yEnd - 7);
+	}
+	else 
+	{
+		xBegin = abs(xBegin - 7);
+		xEnd   = abs(xEnd - 7);
+	}
+
+	lastMoveBeginSquare = { xBegin, yBegin };
+	lastMoveEndSquare = { xEnd, yEnd };
 }
 
 void GameRenderer::pollBoardPosition(int* x, int* y)
@@ -296,7 +316,7 @@ void GameRenderer::waitZectoide()
 {
 	if (zectoide->stoppedSearching()) {
 		auto bestMove = zectoide->getMove();
-
+		saveLastMoveSquares(bestMove.originalSquare, bestMove.finalSquare);
 		game->make(bestMove.pieceType, bestMove.originalSquare, bestMove.finalSquare);
 		if (bestMove.promotion)
 			game->promote(bestMove.promotedTo);

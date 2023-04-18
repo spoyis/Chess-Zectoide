@@ -1,8 +1,10 @@
 #include "../include/Board.h"
 
-#define getColor(SDL_Color) SDL_Color.r, SDL_Color.g, SDL_Color.b, SDL_Color.a
 
-void Board::fillBoard()
+#define getColor(SDL_Color) SDL_Color.r, SDL_Color.g, SDL_Color.b, SDL_Color.a
+#define getMovedColor(SDL_Color) SDL_Color.r * 0.4, SDL_Color.g * 0.4, SDL_Color.b * 0.4, SDL_Color.a
+
+void Board::fillBoard(std::pair<int,int> lastMoveBegin, std::pair<int, int> lastMoveEnd)
 {
     int start_x = 0;
     int start_y = boardStart;
@@ -14,13 +16,22 @@ void Board::fillBoard()
     {
         for (int j = 0; j < 8; j++)
         {
+            std::cout << lastMoveBegin.first <<  " | " << lastMoveBegin.second << "   &&   " <<  lastMoveEnd.first << " | " << lastMoveEnd.second << '\n';
             SDL_Rect rect = {start_x, start_y, squareSize, squareSize};
-
+            bool movedSquare = (j == lastMoveBegin.first && i == lastMoveBegin.second) || (j == lastMoveEnd.first && i == lastMoveEnd.second);
             if ((j + i) % 2 == 0)
-                SDL_SetRenderDrawColor(renderer, getColor(squareColor[0]));
-            else
-                SDL_SetRenderDrawColor(renderer, getColor(squareColor[1]));
-
+            {
+                if (movedSquare)
+                    SDL_SetRenderDrawColor(renderer, getMovedColor(squareColor[0]));
+                else
+                    SDL_SetRenderDrawColor(renderer, getColor(squareColor[0]));
+            }
+            else {
+                if(movedSquare)
+                    SDL_SetRenderDrawColor(renderer, getMovedColor(squareColor[1]));
+                else
+                    SDL_SetRenderDrawColor(renderer, getColor(squareColor[1]));
+            }
             SDL_RenderFillRect(renderer, &rect);
             start_x = (start_x + squareSize) % lineLength;
             if (start_x == 0) start_y += squareSize;

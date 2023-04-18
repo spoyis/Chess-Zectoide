@@ -41,6 +41,7 @@ namespace AI {
 	double Zectoide::search(double alpha, double beta, int currentDepth)
 	{
 		double eval = maximizingPlayer ? -DBL_MAX : DBL_MAX;
+		bool moved = false;
 
 		if (currentDepth == searchVariables.maxDepth) {
 			return searchVariables.maximizingWhite
@@ -85,7 +86,7 @@ namespace AI {
 
 					if (!searchStates[currentDepth + 1].wasTheLastMoveLegal())
 						continue;
-					
+					moved = true;
 					const auto result = search<!maximizingPlayer, false>(alpha, beta, currentDepth + 1);
 
 					if (rootNode) {
@@ -128,7 +129,7 @@ namespace AI {
 
 				if (!searchStates[currentDepth + 1].wasTheLastMoveLegal())
 					continue;
-
+				moved = true;
 				int loopAmount = 1;
 
 				if (searchStates[1].getPromotionState()) loopAmount = 4;
@@ -181,7 +182,16 @@ namespace AI {
 				}
 			}
 		}
-
+		if (!moved) {
+			if (searchStates[currentDepth].isThisSquareUnderAttack(moves[chess::king].begin().operator*().initialSquare)) {
+				//std::cout << "CHECKMATE\n";
+				return eval; // checkmate
+			}
+			else {
+				//std::cout << "DRAW\n";
+				return 0;
+			}
+		}
 		return eval;
 	}
 }

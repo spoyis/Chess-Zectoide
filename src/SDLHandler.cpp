@@ -80,7 +80,7 @@ void SDLHandler::update()
         game->waitZectoide();
 
     background->render();
-    board->fillBoard();
+    board->fillBoard(game->getLastMoveBegin(), game->getLastMoveEnd());
     if (game->gameRenderState == HASNT_STARTED)
     {
         play->checkHover(window);
