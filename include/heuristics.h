@@ -1,11 +1,22 @@
 #pragma once
 #include "../include/GameState.h"
+#include <random>
 
 namespace AI::Heuristic 
 {
 
-	#define INNER_CENTER_BONUS 3
-	#define OUTER_CENTER_BONUS 1
+	#define INNER_CENTER_BONUS 2.1
+	#define OUTER_CENTER_BONUS 1.1
+
+	double inline randomEval() {
+		std::minstd_rand rand(std::random_device{}());
+
+		// Generate a random number between 0 and 1
+		double randNum = static_cast<double>(rand()) / static_cast<double>(rand.max());
+
+		// Scale the random number to the [0, 0.2] interval
+		return randNum * 0.2;
+	}
 	
 	template<bool evalForWhite>
 	double inline pieceScore(chess::GameState& game) 
@@ -60,6 +71,6 @@ namespace AI::Heuristic
 
 	template<bool evalForWhite>
 	double inline eval(chess::GameState& game) {
-		return -centerScore<evalForWhite>(game) + pieceScore<evalForWhite>(game);
+		return -centerScore<evalForWhite>(game) + pieceScore<evalForWhite>(game) + randomEval();
 	}
 }

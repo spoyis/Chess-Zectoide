@@ -129,33 +129,35 @@ namespace chess
   {
       BitBoard King = ALLYKING;
       MoveList moves(1);
+      if (King.board) {
+          auto kingPos = King.popBit();
+          BitBoard PossibleMoves{ BitBoard(KingMoves::get[kingPos]) & (ENEMYBITBOARD + boardState.board[empty_board]) };
 
-      auto kingPos = King.popBit();
-      BitBoard PossibleMoves{ BitBoard(KingMoves::get[kingPos]) & (ENEMYBITBOARD + boardState.board[empty_board]) };
+          BitBoard longRay = { longCastleRay[boardStateOffset] };
+          if (longCastle[whoseTurn] and (longRay & boardState.board[empty_board]) == longRay) {
+              auto pos = kingPos;
+              bool attacked = isThisSquareUnderAttack(pos);
+              attacked |= isThisSquareUnderAttack(--pos);
+              attacked |= isThisSquareUnderAttack(--pos);
+              if (!attacked)
+                  PossibleMoves += pos;
+          }
 
-      BitBoard longRay = { longCastleRay[boardStateOffset] };
-      if (longCastle[whoseTurn] and (longRay & boardState.board[empty_board]) == longRay) {
-          auto pos = kingPos;
-          bool attacked = isThisSquareUnderAttack(pos);
-          attacked |= isThisSquareUnderAttack(--pos);
-          attacked |= isThisSquareUnderAttack(--pos);
-          if (!attacked)
-              PossibleMoves += pos;
+          BitBoard shortRay = { shortCastleRay[boardStateOffset] };
+
+          if (shortCastle[whoseTurn] and (shortRay & boardState.board[empty_board]) == shortRay) {
+              auto pos = kingPos;
+              bool attacked = isThisSquareUnderAttack(pos);
+              attacked |= isThisSquareUnderAttack(++pos);
+              attacked |= isThisSquareUnderAttack(++pos);
+              if (!attacked)
+                  PossibleMoves += pos;
+          }
+
+          moves.addMove(Move{ kingPos, PossibleMoves });
       }
-
-      BitBoard shortRay = { shortCastleRay[boardStateOffset] };
-      
-      if (shortCastle[whoseTurn] and (shortRay & boardState.board[empty_board]) == shortRay) {
-          auto pos = kingPos;
-          bool attacked = isThisSquareUnderAttack(pos);
-          attacked |= isThisSquareUnderAttack(++pos);
-          attacked |= isThisSquareUnderAttack(++pos);
-          if (!attacked)
-              PossibleMoves += pos;
-      }
-
-      moves.addMove(Move{ kingPos, PossibleMoves });
-      
+      else
+          moves.addMove(Move{ 0, 0ULL }); // TODO: REMOVE THIS WHEN MATE IS IMPLEMENTED
       return moves;
   }
 

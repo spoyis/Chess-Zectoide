@@ -47,21 +47,8 @@ namespace AI
 		SearchVariables searchVariables;
 		bool finishedSearching{ false };
 		
-		// depth 0 methods
-		void search();
-
-		// depth > 0 methods
-		template <bool maximizingPlayer>
+		template <bool maximizingPlayer, bool rootNode>
 		double search(double alpha, double beta);
-
-		template <bool maximizingPlayer>
-		inline double recurse(double& alpha, double& beta, double& eval, int pieceID, unsigned long originalSquare, unsigned long finalSquare);
-
-		template <bool maximizingPlayer>
-		inline void recursePawn(double& alpha, double& beta, double& eval, int pieceID, unsigned long originalSquare, unsigned long finalSquare);
-
-		template <bool maximizingPlayer>
-		inline double promote(double& alpha, double& beta, double& eval, int pieceID, unsigned long originalSquare, unsigned long finalSquare, int promotionIndex);
 	};
 
 } // end namespace zectoide
