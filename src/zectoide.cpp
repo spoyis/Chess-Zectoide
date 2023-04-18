@@ -19,12 +19,11 @@ namespace AI {
 
 		std::clock_t start = std::clock();
 		double duration = 0;
-		searchVariables.currentDepth = 0;
 		searchStates[0] = originalState;
 
 		while (duration < maxSearchTime)
 		{
-			search<true, true>(-DBL_MAX, DBL_MAX);
+			search<true, true>(-DBL_MAX, DBL_MAX, 0);
 
 			duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 			searchVariables.maxDepth++;
@@ -38,18 +37,18 @@ namespace AI {
 
 
 	template<bool maximizingPlayer, bool rootNode>
-	double Zectoide::search(double alpha, double beta)
+	double Zectoide::search(double alpha, double beta, int currentDepth)
 	{
 		double eval = maximizingPlayer ? -DBL_MAX : DBL_MAX;
 
-		if (searchVariables.currentDepth == searchVariables.maxDepth) {
+		if (currentDepth == searchVariables.maxDepth) {
 			return searchVariables.maximizingWhite
-				? Heuristic::eval<true >(searchStates[searchVariables.currentDepth])
-				: Heuristic::eval<false>(searchStates[searchVariables.currentDepth]);
+				? Heuristic::eval<true >(searchStates[currentDepth])
+				: Heuristic::eval<false>(searchStates[currentDepth]);
 		}
 
 		// fetch moves
-		auto moves = searchStates[searchVariables.currentDepth].getAllMoves();
+		auto moves = searchStates[currentDepth].getAllMoves();
 
 		if (rootNode) {
 			// check if bestmove is set
@@ -67,9 +66,7 @@ namespace AI {
 						if (bestMove.promotion)
 							searchStates[1].promote(bestMove.promotedTo);
 
-						++searchVariables.currentDepth;
-						auto result = search<!maximizingPlayer, false>(alpha, beta);
-						--searchVariables.currentDepth;
+						auto result = search<!maximizingPlayer, false>(alpha, beta, currentDepth + 1);
 						eval = alpha = result;
 						break;
 					}
@@ -81,19 +78,14 @@ namespace AI {
 			for (auto piece : moves[pieceType]) {
 				while (piece.possibleMoves.board) {
 
-					const auto currentDepth = ++searchVariables.currentDepth;
 					const auto finalSquare = piece.possibleMoves.popBit();
-					searchStates[currentDepth] = searchStates[currentDepth - 1];
-					searchStates[currentDepth].make(pieceType, piece.initialSquare, finalSquare);
+					searchStates[currentDepth + 1] = searchStates[currentDepth];
+					searchStates[currentDepth + 1].make(pieceType, piece.initialSquare, finalSquare);
 
-					auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
-					if (!boardLegality){
-						searchVariables.currentDepth--;
+					if (!searchStates[currentDepth + 1].wasTheLastMoveLegal())
 						continue;
-					}
-
-					const auto result = search<!maximizingPlayer, false>(alpha, beta);
-					searchVariables.currentDepth--;
+					
+					const auto result = search<!maximizingPlayer, false>(alpha, beta, currentDepth + 1);
 
 					if (rootNode) {
 						if (result > eval){
@@ -131,16 +123,13 @@ namespace AI {
 			while (piece.possibleMoves.board) {
 
 				const auto finalSquare = piece.possibleMoves.popBit();
-				const auto currentDepth = ++searchVariables.currentDepth;
 
-				searchStates[currentDepth] = searchStates[currentDepth - 1];
-				searchStates[currentDepth].make(chess::pawn, piece.initialSquare, finalSquare);
+				searchStates[currentDepth + 1] = searchStates[currentDepth];
+				searchStates[currentDepth + 1].make(chess::pawn, piece.initialSquare, finalSquare);
 
-				auto boardLegality = searchStates[searchVariables.currentDepth].wasTheLastMoveLegal();
-				if (!boardLegality) {
-					searchVariables.currentDepth--;
+				if (!searchStates[currentDepth + 1].wasTheLastMoveLegal())
 					continue;
-				}
+
 				int loopAmount = 1;
 
 				if (searchStates[1].getPromotionState()) loopAmount = 4;
@@ -149,15 +138,11 @@ namespace AI {
 					double result;
 
 					if (loopAmount == 4) {
-						const auto currentDepth = searchVariables.currentDepth;
-						searchStates[currentDepth].promote(promotionPieces[i]);
-
-						return search<!maximizingPlayer, false>(alpha, beta);
+						searchStates[currentDepth + 1].promote(promotionPieces[i]);
+						return search<!maximizingPlayer, false>(alpha, beta, currentDepth + 1);
 					}
 					else
-						result = search<!maximizingPlayer, false>(alpha, beta);
-
-					--searchVariables.currentDepth;
+						result = search<!maximizingPlayer, false>(alpha, beta, currentDepth + 1);
 
 					if (rootNode){
 

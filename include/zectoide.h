@@ -36,7 +36,6 @@ namespace AI
 		
 		struct SearchVariables {
 			bool maximizingWhite;
-			int currentDepth{ 1 };
 			int maxDepth{ 1 };
 			BestMove bestMove;
 		};
@@ -48,7 +47,7 @@ namespace AI
 		bool finishedSearching{ false };
 		
 		template <bool maximizingPlayer, bool rootNode>
-		double search(double alpha, double beta);
+		double search(double alpha, double beta, int currentDepth);
 	};
 
 } // end namespace zectoide
