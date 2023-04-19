@@ -133,9 +133,13 @@ void GameRenderer::releasePiece()
 				game->make(whichPieceIsBeingHeld - game->getBoardStateOffset(), OriginalSquare, move);
 				legalMove = true;
 				updatePieceMatrix();
-				zectoide = new AI::Zectoide(*game, !playingAsWhite);
-				zectoide->startSearch();
+				
 				waitingForZectoide = true;
+				if (game->getPromotionState() == false)
+				{
+					zectoide = new AI::Zectoide(*game, !playingAsWhite);
+					zectoide->startSearch();
+				}
 				break;
 			}
 		}
@@ -313,6 +317,11 @@ void GameRenderer::pollPromotion()
 
 		game->promote(promotionMatrix[y][x]);
 		updatePieceMatrix();
+		if (waitingForZectoide)
+		{
+			zectoide = new AI::Zectoide(*game, !playingAsWhite);
+			zectoide->startSearch();
+		}
 		gameRenderState = PLAYING;
 	}
 	
@@ -321,6 +330,7 @@ void GameRenderer::pollPromotion()
 
 void GameRenderer::waitZectoide()
 {
+	if (zectoide == nullptr) return;
 	if (zectoide->stoppedSearching()) {
 		auto bestMove = zectoide->getMove();
 		saveLastMoveSquares(bestMove.originalSquare, bestMove.finalSquare);
@@ -333,5 +343,6 @@ void GameRenderer::waitZectoide()
 		std::cout << "LAST MOVE WAS LEGAL? " << legal << '\n';
 		waitingForZectoide = false;
 		delete zectoide;
+		zectoide = nullptr;
 	}
 }
