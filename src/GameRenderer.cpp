@@ -146,10 +146,17 @@ void GameRenderer::releasePiece()
 
 void GameRenderer::setupGame(int color)
 {
-	if(color == CHOSE_WHITE) playingAsWhite = true;
-	if(color == CHOSE_BLACK) playingAsWhite = false;
-
-	game = new chess::GameState();
+	if (color == CHOSE_WHITE) {
+		playingAsWhite = true;
+		game = new chess::GameState();
+	}
+	if (color == CHOSE_BLACK) { 
+		waitingForZectoide = true;
+		playingAsWhite = false;
+		game = new chess::GameState();
+		zectoide = new AI::Zectoide(*game, !playingAsWhite);
+		zectoide->startSearch();
+	}
 
 	updatePieceMatrix();
 }

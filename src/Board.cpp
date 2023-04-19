@@ -2,7 +2,7 @@
 
 
 #define getColor(SDL_Color) SDL_Color.r, SDL_Color.g, SDL_Color.b, SDL_Color.a
-#define getMovedColor(SDL_Color) SDL_Color.r * 0.4, SDL_Color.g * 0.4, SDL_Color.b * 0.4, SDL_Color.a
+#define getMovedColor(SDL_Color) SDL_Color.r * 0.6, SDL_Color.g * 0.6, SDL_Color.b * 0.4, SDL_Color.a
 
 void Board::fillBoard(std::pair<int,int> lastMoveBegin, std::pair<int, int> lastMoveEnd)
 {
